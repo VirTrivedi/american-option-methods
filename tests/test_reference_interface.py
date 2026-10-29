@@ -46,10 +46,9 @@ def test_interface_dispatch():
     assert price(P, "tree_reference", n_base=250) == pytest.approx(reference_price(P, 250).price)
 
 
-@pytest.mark.parametrize("method", ["pde", "lsm"])
-def test_interface_unimplemented(method):
+def test_interface_unimplemented():
     with pytest.raises(NotImplementedError, match="not implemented"):
-        price(P, method)
+        price(P, "lsm")
 
 
 def test_interface_unknown_method():

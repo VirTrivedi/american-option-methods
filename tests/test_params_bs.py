@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from aopt.bs import bs_delta, bs_price
+from aopt.bs import bs_delta, bs_price, bs_gamma
 from aopt.params import OptionParams
 
 
@@ -38,3 +38,10 @@ def test_bs_delta_matches_finite_difference():
     for typ in ("call", "put"):
         fd = (bs_price(100 + h, 100, 1, 0.05, 0.02, 0.2, typ) - bs_price(100 - h, 100, 1, 0.05, 0.02, 0.2, typ)) / (2 * h)
         assert bs_delta(100, 100, 1, 0.05, 0.02, 0.2, typ) == pytest.approx(fd, abs=1e-7)
+
+
+def test_bs_gamma_matches_finite_difference():
+    h = 1e-2
+    f = lambda s: bs_price(s, 100, 1, 0.05, 0.02, 0.2, "call")
+    fd = (f(100 + h) - 2 * f(100) + f(100 - h)) / h**2
+    assert bs_gamma(100, 100, 1, 0.05, 0.02, 0.2) == pytest.approx(fd, abs=1e-6)

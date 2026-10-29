@@ -32,3 +32,11 @@ def bs_delta(S: ArrayLike, K: ArrayLike, T: ArrayLike, r: ArrayLike, q: ArrayLik
     if option_type == "put":
         return -np.exp(-q * T) * ndtr(-d1)
     raise ValueError(f"option_type must be 'put' or 'call', got {option_type!r}")
+
+
+def bs_gamma(S: ArrayLike, K: ArrayLike, T: ArrayLike, r: ArrayLike, q: ArrayLike, sigma: ArrayLike) -> NDArray[np.float64]:
+    """European option gamma d2V/dS2."""
+    S, _, T, _, q, d1, _ = d1_d2(S, K, T, r, q, sigma)
+    sigma = np.asarray(sigma, dtype=float)
+    pdf = np.exp(-0.5 * d1**2) / np.sqrt(2.0 * np.pi)
+    return np.exp(-q * T) * pdf / (S * sigma * np.sqrt(T))

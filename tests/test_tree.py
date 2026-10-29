@@ -115,11 +115,11 @@ def test_call_boundary_above_strike():
 
 
 def test_perpetual_put_boundary():
-    # q = 0: S* = K * b / (b - 1) with b = -2r/sigma^2 (the negative root of the ODE), i.e.
-    # S* = K * g / (g + 1) for g = 2r/sigma^2. Far from maturity the finite-T boundary is flat
+    # q = 0: V = A*S^(-g) solves the perpetual ODE with g = 2r/sigma^2; smooth pasting gives
+    # S* = K*g/(g+1). Far from maturity the finite-T boundary is flat. Here g = 1, S* = 50.
     r, sigma, K, T, n = 0.08, 0.4, 100.0, 30.0, 3000
     g = 2 * r / sigma**2
-    target = K * g / (g + 1)  # = 50
+    target = K * g / (g + 1)
     _, s_star = exercise_boundary(make(r=r, q=0.0, sigma=sigma, T=T, K=K), n)
     spacing = 2 * sigma * np.sqrt(T / n)  # relative node spacing
     for frac in (0.05, 0.1, 0.2):
