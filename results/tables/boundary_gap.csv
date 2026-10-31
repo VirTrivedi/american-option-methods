@@ -1,0 +1,3 @@
+comparison,mean_gap,mean_abs_gap
+LSM - American PDE boundary,+1.280,1.280
+LSM - Bermudan tree boundary (same dates),+0.112,0.384

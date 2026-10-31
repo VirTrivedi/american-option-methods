@@ -1,6 +1,7 @@
 """Cox-Ross-Rubinstein binomial tree for European and American options."""
 from __future__ import annotations
 import math
+from collections.abc import Collection
 import numpy as np
 from numpy.typing import NDArray
 from .params import OptionParams
@@ -27,9 +28,40 @@ def crr_factors(params: OptionParams, n_steps: int) -> tuple[float, float, float
     return dt, u, p, math.exp(-params.r * dt)
 
 
-def induct(params: OptionParams, n_steps: int, european: bool, track_boundary: bool) -> tuple[float, NDArray[np.float64] | None]:
+def exercise_mask(n_steps: int, european: bool, exercise_steps: Collection[int] | None) -> NDArray[np.bool_]:
+    """allowed[n] is True if early exercise is permitted at tree step n (maturity is always a payoff)."""
+    if european and exercise_steps is not None:
+        raise ValueError("pass either european=True or exercise_steps, not both")
+    
+    if european:
+        return np.zeros(n_steps + 1, dtype=bool)
+    
+    if exercise_steps is None:
+        return np.ones(n_steps + 1, dtype=bool)
+    
+    steps = np.asarray(sorted(exercise_steps), dtype=int)
+    if steps.size and (steps[0] < 0 or steps[-1] > n_steps):
+        raise ValueError(f"exercise_steps must lie in [0, {n_steps}]")
+    
+    allowed = np.zeros(n_steps + 1, dtype=bool)
+    allowed[steps] = True
+
+    return allowed
+
+
+def bermudan_steps(n_steps: int, n_ex: int) -> frozenset[int]:
+    """Tree steps of n_ex equally spaced exercise dates T/n_ex, ..., T (maturity included, t = 0 excluded)."""
+    if n_ex < 1 or n_steps % n_ex != 0:
+        raise ValueError(f"n_steps={n_steps} must be a positive multiple of n_ex={n_ex}")
+    
+    return frozenset(k * (n_steps // n_ex) for k in range(1, n_ex + 1))
+
+
+def induct(params: OptionParams, n_steps: int, european: bool, track_boundary: bool, 
+           exercise_steps: Collection[int] | None = None) -> tuple[float, NDArray[np.float64] | None]:
     """Backward induction; optionally record the exercise boundary."""
     _, u, p, disc = crr_factors(params, n_steps)
+    allowed = exercise_mask(n_steps, european, exercise_steps)
     log_u = math.log(u)
     is_put = params.option_type == "put"
 
@@ -51,7 +83,7 @@ def induct(params: OptionParams, n_steps: int, european: bool, track_boundary: b
 
     for n in range(n_steps - 1, -1, -1):
         cont = disc * (p * values[1:] + (1.0 - p) * values[:-1])
-        if european:
+        if not allowed[n]:
             values = cont
         else:
             s = nodes(n)
@@ -62,12 +94,12 @@ def induct(params: OptionParams, n_steps: int, european: bool, track_boundary: b
     return float(values[0]), boundary
 
 
-def tree_price(params: OptionParams, n_steps: int = 500, european: bool = False) -> float:
+def tree_price(params: OptionParams, n_steps: int = 500, european: bool = False, exercise_steps: Collection[int] | None = None) -> float:
     """Price with an ``n_steps`` CRR tree (American by default)."""
-    return induct(params, n_steps, european, track_boundary=False)[0]
+    return induct(params, n_steps, european, False, exercise_steps)[0]
 
 
-def exercise_boundary(params: OptionParams, n_steps: int = 500) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
-    """Early-exercise boundary of an American option on the CRR tree."""
-    _, boundary = induct(params, n_steps, european=False, track_boundary=True)
+def exercise_boundary(params: OptionParams, n_steps: int = 500, exercise_steps: Collection[int] | None = None) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
+    """Early-exercise boundary on the CRR tree (American, or Bermudan with ``exercise_steps``)."""
+    _, boundary = induct(params, n_steps, False, True, exercise_steps)
     return np.linspace(0.0, params.T, n_steps + 1), boundary

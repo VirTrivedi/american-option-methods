@@ -46,9 +46,9 @@ def test_interface_dispatch():
     assert price(P, "tree_reference", n_base=250) == pytest.approx(reference_price(P, 250).price)
 
 
-def test_interface_unimplemented():
-    with pytest.raises(NotImplementedError, match="not implemented"):
-        price(P, "lsm")
+def test_interface_lsm_dispatch():
+    value = price(P, "lsm", n_paths=2000, n_ex=10, seed=3)
+    assert np.isfinite(value) and 4.0 < value < 8.0
 
 
 def test_interface_unknown_method():

@@ -1,0 +1,7 @@
+component,value,error
+discretization (American - Bermudan benchmark),0.011768,6.1e-05
+regression/policy (Bermudan benchmark - mean out-of-sample LSM),0.005568,0.000465
+total (American - mean out-of-sample LSM),0.017336,0.000469
+Monte Carlo standard error of ONE run (out-of-sample),0.003044,
+policy term in units of its standard error (z),11.98,
+mean in-sample LSM minus Bermudan benchmark,-0.004844,0.000617

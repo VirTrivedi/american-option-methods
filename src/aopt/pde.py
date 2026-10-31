@@ -37,8 +37,8 @@ class PDEResult:
 
 
 def default_half_width(params: OptionParams) -> float:
-    """L = max(3, 5*sigma*sqrt(T) + |r-q|*T), widened by |ln(S0/K)| so S0 is inside the domain."""
-    base = max(3.0, 5.0 * params.sigma * math.sqrt(params.T) + abs(params.r - params.q) * params.T)
+    """L = max(5*sigma*sqrt(T) + |r-q|*T, 1.5), widened by |ln(S0/K)| so S0 is inside the domain."""
+    base = max(5.0 * params.sigma * math.sqrt(params.T) + abs(params.r - params.q) * params.T, 1.5)
 
     return base + abs(math.log(params.S / params.K))
 

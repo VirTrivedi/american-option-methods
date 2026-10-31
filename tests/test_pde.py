@@ -29,7 +29,8 @@ def test_european_matches_black_scholes_and_error_shrinks(opt):
         errs.append((abs(res.price - ref_price), abs(res.delta - ref_delta), abs(res.gamma - ref_gamma)))
     errs = np.array(errs)
     assert np.all(errs[1:] < errs[:-1] / 3.0)  # second order: ~4x per doubling
-    assert errs[-1, 0] < 1e-2 and errs[-1, 1] < 1e-4 and errs[-1, 2] < 1e-4
+    # Measured at M = N = 400 (L = 1.5): price 1.3e-3, delta <= 1.9e-5, gamma 3.3e-6; ratios ~4.0 per doubling.
+    assert errs[-1, 0] < 2e-3 and errs[-1, 1] < 3e-5 and errs[-1, 2] < 5e-6
 
 
 def test_s0_lies_on_a_grid_node():
@@ -68,12 +69,10 @@ def test_dividend_american_call_has_premium():
 def test_matches_tree_reference_at_400_and_tightened():
     p = make()
     ref = reference_price(p, 2000).price
-    gap_default = abs(solve_pde(p, 400, 400).price - ref)
-    # Measured 6.1e-3: the error is spatial O(h^2) with h = 2L/M = 0.015 for the default L = 3, so the 1e-3
-    # target is out of reach at M = 400 with that wide a domain.
-    assert gap_default < 8e-3
-    # Narrower domain (L = 2) and M = N = 800 (h = 0.005) reaches the originally requested 1e-3.
-    assert abs(solve_pde(p, 800, 800, L=2.0).price - ref) < 1e-3
+    # Measured with the default domain (L = 1.5): gap -1.65e-3 at M = N = 400, -4.5e-4 at M = N = 800.
+    # The error is spatial O(h^2), so the originally requested 1e-3 is met at M = N = 800, not 400.
+    assert abs(solve_pde(p, 400, 400).price - ref) < 2.5e-3
+    assert abs(solve_pde(p, 800, 800).price - ref) < 1e-3
 
 
 def test_psor_and_penalty_agree():
@@ -92,8 +91,8 @@ def test_put_boundary_properties():
     ok = ~np.isnan(s)
     assert ok.any() and np.all(s[ok] <= p.K + 1e-9)
     # Monotone nondecreasing up to O(h) jumps where the contact edge advances a node: the largest
-    # measured drop is 0.41 against a node spacing of ~1.2 (h = 6/400, S ~ 80), so allow half a spacing.
-    assert np.all(np.diff(s[ok]) >= -0.5 * (2 * 3.0 / 400) * p.K)
+    # measured drop is 0.20 against a node spacing of ~0.6 (h = 3/400, S ~ 80), so allow half a spacing.
+    assert np.all(np.diff(s[ok]) >= -0.5 * (2 * 1.5 / 400) * p.K)
     assert np.all(np.diff(s[ok][::40]) > 0)  # strictly increasing when sampled coarsely
     assert s[-1] == p.K and s[-3] > 0.97 * p.K
 
@@ -104,7 +103,7 @@ def test_boundary_agrees_with_tree_and_is_smoother():
     t_tree, s_tree = exercise_boundary(p, 2000)
     mask = (t_tree > 0.1) & (t_tree < 0.9)
     s_pde = np.interp(t_tree[mask], res.boundary_t, res.boundary_S)
-    assert np.max(np.abs(s_pde - s_tree[mask])) < 1.0  # within the tree's node spacing (~0.8 here)
+    assert np.max(np.abs(s_pde - s_tree[mask])) < 1.0  # measured 0.71; the tree's own node spacing is ~0.8
     mask_pde = (res.boundary_t > 0.1) & (res.boundary_t < 0.9)
     assert np.unique(res.boundary_S[mask_pde]).size > 0.9 * mask_pde.sum()  # no staircase plateaus
 
@@ -117,7 +116,7 @@ def test_grid_refinement_convergence(rannacher):
     errs = np.array([abs(solve_pde(p, int(M), int(M), rannacher=rannacher).price - ref) for M in Ms])
     assert np.all(np.diff(errs) < 0)
     slope = np.polyfit(np.log(Ms), np.log(errs), 1)[0]
-    assert -2.5 < slope < -1.5, f"slope {slope:.2f}"
+    assert -2.2 < slope < -1.7, f"slope {slope:.2f}"  # measured -1.93 (on) / -1.96 (off)
 
 
 def test_rannacher_damps_gamma_oscillation():
@@ -129,8 +128,8 @@ def test_rannacher_damps_gamma_oscillation():
         window = (S > 90) & (S < 110)
         return float(np.max(np.abs(np.diff(gamma[window], 2))))  # second differences expose zigzag
 
-    # Measured: the unsmoothed run is several times rougher; require at least 3x.
-    assert roughness(False) > 3.0 * roughness(True)
+    # Measured at L = 1.5: the unsmoothed run is ~65x rougher (0.59 vs 0.0091); require at least 10x.
+    assert roughness(False) > 10.0 * roughness(True)
 
 
 def test_rannacher_flag_changes_step_count():
