@@ -1,92 +1,197 @@
-method,config,price,error_vs_american,runtime_seconds,seed
-tree,N=50,6.07372799,-1.664e-02,0.00039,
-tree,N=100,6.08235441,-8.016e-03,0.00078,
-tree,N=200,6.08638275,-3.988e-03,0.00164,
-tree,N=400,6.08840590,-1.965e-03,0.00360,
-tree,N=800,6.08940162,-9.692e-04,0.00837,
-tree,N=1600,6.08989260,-4.782e-04,0.02072,
-tree,N=3200,6.09013298,-2.378e-04,0.05928,
-tree_reference,n_base=250,6.09038204,+1.122e-05,0.03659,
-tree_reference,n_base=500,6.09038508,+1.426e-05,0.08922,
-tree_reference,n_base=1000,6.09037159,+7.718e-07,0.25179,
-tree_reference,n_base=2000,6.09037272,+1.902e-06,0.80730,
-pde_psor,M=N=100,6.06558526,-2.479e-02,0.00896,
-pde_penalty,M=N=100,6.06558525,-2.479e-02,0.00291,
-pde_psor,M=N=200,6.08404330,-6.328e-03,0.02402,
-pde_penalty,M=N=200,6.08404328,-6.328e-03,0.00642,
-pde_psor,M=N=400,6.08871788,-1.653e-03,0.06269,
-pde_penalty,M=N=400,6.08871787,-1.653e-03,0.01454,
-pde_psor,M=N=800,6.08992391,-4.469e-04,0.17677,
-pde_penalty,M=N=800,6.08992390,-4.469e-04,0.03687,
-pde_psor,M=N=1600,6.09024578,-1.250e-04,0.55402,
-pde_penalty,M=N=1600,6.09024578,-1.250e-04,0.10213,
-lsm_in_sample,"paths=1000, n_ex=50, laguerre deg 3",6.10299770,+1.263e-02,0.00361,1000
-lsm_out_of_sample,"paths=1000, n_ex=50, laguerre deg 3",5.95910721,-1.313e-01,0.00535,1000
-lsm_in_sample,"paths=1000, n_ex=50, laguerre deg 3",6.47290068,+3.825e-01,0.00324,1001
-lsm_out_of_sample,"paths=1000, n_ex=50, laguerre deg 3",5.93915453,-1.512e-01,0.00519,1001
-lsm_in_sample,"paths=1000, n_ex=50, laguerre deg 3",5.99560495,-9.477e-02,0.00332,1002
-lsm_out_of_sample,"paths=1000, n_ex=50, laguerre deg 3",5.84329731,-2.471e-01,0.00511,1002
-lsm_in_sample,"paths=1000, n_ex=50, laguerre deg 3",6.42628798,+3.359e-01,0.00333,1003
-lsm_out_of_sample,"paths=1000, n_ex=50, laguerre deg 3",6.34222454,+2.519e-01,0.00516,1003
-lsm_in_sample,"paths=1000, n_ex=50, laguerre deg 3",6.14015410,+4.978e-02,0.00328,1004
-lsm_out_of_sample,"paths=1000, n_ex=50, laguerre deg 3",5.75613000,-3.342e-01,0.00513,1004
-lsm_in_sample,"paths=3000, n_ex=50, laguerre deg 3",6.08396535,-6.405e-03,0.00730,1000
-lsm_out_of_sample,"paths=3000, n_ex=50, laguerre deg 3",6.07337796,-1.699e-02,0.01078,1000
-lsm_in_sample,"paths=3000, n_ex=50, laguerre deg 3",6.28716699,+1.968e-01,0.00739,1001
-lsm_out_of_sample,"paths=3000, n_ex=50, laguerre deg 3",5.88575851,-2.046e-01,0.01086,1001
-lsm_in_sample,"paths=3000, n_ex=50, laguerre deg 3",6.08342852,-6.942e-03,0.00719,1002
-lsm_out_of_sample,"paths=3000, n_ex=50, laguerre deg 3",6.01827090,-7.210e-02,0.01076,1002
-lsm_in_sample,"paths=3000, n_ex=50, laguerre deg 3",6.02664011,-6.373e-02,0.00722,1003
-lsm_out_of_sample,"paths=3000, n_ex=50, laguerre deg 3",5.94424982,-1.461e-01,0.01076,1003
-lsm_in_sample,"paths=3000, n_ex=50, laguerre deg 3",6.11738654,+2.702e-02,0.00719,1004
-lsm_out_of_sample,"paths=3000, n_ex=50, laguerre deg 3",6.03230041,-5.807e-02,0.01078,1004
-lsm_in_sample,"paths=10000, n_ex=50, laguerre deg 3",6.18229212,+9.192e-02,0.01992,1000
-lsm_out_of_sample,"paths=10000, n_ex=50, laguerre deg 3",6.02917144,-6.120e-02,0.02924,1000
-lsm_in_sample,"paths=10000, n_ex=50, laguerre deg 3",6.09434186,+3.971e-03,0.02018,1001
-lsm_out_of_sample,"paths=10000, n_ex=50, laguerre deg 3",6.07419275,-1.618e-02,0.02948,1001
-lsm_in_sample,"paths=10000, n_ex=50, laguerre deg 3",6.10605524,+1.568e-02,0.01994,1002
-lsm_out_of_sample,"paths=10000, n_ex=50, laguerre deg 3",6.08008311,-1.029e-02,0.02936,1002
-lsm_in_sample,"paths=10000, n_ex=50, laguerre deg 3",6.15096460,+6.059e-02,0.01989,1003
-lsm_out_of_sample,"paths=10000, n_ex=50, laguerre deg 3",6.05535614,-3.501e-02,0.02916,1003
-lsm_in_sample,"paths=10000, n_ex=50, laguerre deg 3",6.07825387,-1.212e-02,0.01987,1004
-lsm_out_of_sample,"paths=10000, n_ex=50, laguerre deg 3",6.03460403,-5.577e-02,0.03004,1004
-lsm_in_sample,"paths=30000, n_ex=50, laguerre deg 3",6.13886454,+4.849e-02,0.05849,1000
-lsm_out_of_sample,"paths=30000, n_ex=50, laguerre deg 3",6.06003181,-3.034e-02,0.08370,1000
-lsm_in_sample,"paths=30000, n_ex=50, laguerre deg 3",6.07786856,-1.250e-02,0.05726,1001
-lsm_out_of_sample,"paths=30000, n_ex=50, laguerre deg 3",6.03107075,-5.930e-02,0.08366,1001
-lsm_in_sample,"paths=30000, n_ex=50, laguerre deg 3",6.06027473,-3.010e-02,0.05718,1002
-lsm_out_of_sample,"paths=30000, n_ex=50, laguerre deg 3",6.06908756,-2.128e-02,0.08295,1002
-lsm_in_sample,"paths=30000, n_ex=50, laguerre deg 3",6.12002138,+2.965e-02,0.05750,1003
-lsm_out_of_sample,"paths=30000, n_ex=50, laguerre deg 3",6.02532351,-6.505e-02,0.08344,1003
-lsm_in_sample,"paths=30000, n_ex=50, laguerre deg 3",6.10658170,+1.621e-02,0.05783,1004
-lsm_out_of_sample,"paths=30000, n_ex=50, laguerre deg 3",6.03007933,-6.029e-02,0.08366,1004
-lsm_in_sample,"paths=100000, n_ex=50, laguerre deg 3",6.08136904,-9.002e-03,0.19351,1000
-lsm_out_of_sample,"paths=100000, n_ex=50, laguerre deg 3",6.08301296,-7.358e-03,0.30179,1000
-lsm_in_sample,"paths=100000, n_ex=50, laguerre deg 3",6.09065377,+2.830e-04,0.20221,1001
-lsm_out_of_sample,"paths=100000, n_ex=50, laguerre deg 3",6.05473479,-3.564e-02,0.29319,1001
-lsm_in_sample,"paths=100000, n_ex=50, laguerre deg 3",6.07875962,-1.161e-02,0.22301,1002
-lsm_out_of_sample,"paths=100000, n_ex=50, laguerre deg 3",6.06855938,-2.181e-02,0.29733,1002
-lsm_in_sample,"paths=100000, n_ex=50, laguerre deg 3",6.09096675,+5.959e-04,0.22926,1003
-lsm_out_of_sample,"paths=100000, n_ex=50, laguerre deg 3",6.10399559,+1.362e-02,0.29268,1003
-lsm_in_sample,"paths=100000, n_ex=50, laguerre deg 3",6.07845328,-1.192e-02,0.21313,1004
-lsm_out_of_sample,"paths=100000, n_ex=50, laguerre deg 3",6.07013779,-2.023e-02,0.32148,1004
-lsm_in_sample,"paths=300000, n_ex=50, laguerre deg 3",6.07591300,-1.446e-02,0.77150,1000
-lsm_out_of_sample,"paths=300000, n_ex=50, laguerre deg 3",6.06637656,-2.399e-02,1.00227,1000
-lsm_in_sample,"paths=300000, n_ex=50, laguerre deg 3",6.07478883,-1.558e-02,0.74791,1001
-lsm_out_of_sample,"paths=300000, n_ex=50, laguerre deg 3",6.06830143,-2.207e-02,1.01107,1001
-lsm_in_sample,"paths=300000, n_ex=50, laguerre deg 3",6.07182006,-1.855e-02,0.76968,1002
-lsm_out_of_sample,"paths=300000, n_ex=50, laguerre deg 3",6.07084021,-1.953e-02,1.03453,1002
-lsm_in_sample,"paths=300000, n_ex=50, laguerre deg 3",6.08721440,-3.156e-03,0.74126,1003
-lsm_out_of_sample,"paths=300000, n_ex=50, laguerre deg 3",6.08936667,-1.004e-03,1.00026,1003
-lsm_in_sample,"paths=300000, n_ex=50, laguerre deg 3",6.07439794,-1.597e-02,0.75264,1004
-lsm_out_of_sample,"paths=300000, n_ex=50, laguerre deg 3",6.06968090,-2.069e-02,1.01716,1004
-lsm_in_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07357686,-1.679e-02,2.36859,1000
-lsm_out_of_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07287529,-1.750e-02,3.47340,1000
-lsm_in_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07222327,-1.815e-02,2.38675,1001
-lsm_out_of_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07093070,-1.944e-02,3.14776,1001
-lsm_in_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07540335,-1.497e-02,2.33700,1002
-lsm_out_of_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07537573,-1.500e-02,3.20758,1002
-lsm_in_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07595343,-1.442e-02,2.30478,1003
-lsm_out_of_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.06798847,-2.238e-02,3.28930,1003
-lsm_in_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07452807,-1.584e-02,2.39609,1004
-lsm_out_of_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07015761,-2.021e-02,3.25582,1004
+method,config,price,error_vs_american,error_vs_bermudan,runtime_seconds,seed,scenario
+tree_bermudan,"N=100, n_ex=50",6.07418434,-1.619e-02,-4.419e-03,0.00080,,no_dividend
+tree_bermudan,"N=200, n_ex=50",6.07548530,-1.489e-02,-3.118e-03,0.00113,,no_dividend
+tree_bermudan,"N=400, n_ex=50",6.07701082,-1.336e-02,-1.592e-03,0.00128,,no_dividend
+tree_bermudan,"N=800, n_ex=50",6.07783141,-1.254e-02,-7.717e-04,0.00238,,no_dividend
+tree_bermudan,"N=1600, n_ex=50",6.07817494,-1.220e-02,-4.282e-04,0.00510,,no_dividend
+tree_bermudan,"N=3200, n_ex=50",6.07844769,-1.192e-02,-1.554e-04,0.01161,,no_dividend
+tree,N=50,6.07372799,-1.664e-02,,0.00039,,no_dividend
+tree,N=100,6.08235441,-8.016e-03,,0.00079,,no_dividend
+tree,N=200,6.08638275,-3.988e-03,,0.00164,,no_dividend
+tree,N=400,6.08840590,-1.965e-03,,0.00359,,no_dividend
+tree,N=800,6.08940162,-9.692e-04,,0.00839,,no_dividend
+tree,N=1600,6.08989260,-4.782e-04,,0.02049,,no_dividend
+tree,N=3200,6.09013298,-2.378e-04,,0.05834,,no_dividend
+tree_reference,n_base=250,6.09038204,+1.122e-05,,0.03534,,no_dividend
+tree_reference,n_base=500,6.09038508,+1.426e-05,,0.08747,,no_dividend
+tree_reference,n_base=1000,6.09037159,+7.718e-07,,0.24490,,no_dividend
+tree_reference,n_base=2000,6.09037272,+1.902e-06,,0.79689,,no_dividend
+pde_psor,M=N=100,6.06558526,-2.479e-02,,0.00891,,no_dividend
+pde_penalty,M=N=100,6.06558525,-2.479e-02,,0.00299,,no_dividend
+pde_psor,M=N=200,6.08404330,-6.328e-03,,0.02369,,no_dividend
+pde_penalty,M=N=200,6.08404328,-6.328e-03,,0.00651,,no_dividend
+pde_psor,M=N=400,6.08871788,-1.653e-03,,0.06263,,no_dividend
+pde_penalty,M=N=400,6.08871787,-1.653e-03,,0.01490,,no_dividend
+pde_psor,M=N=800,6.08992391,-4.469e-04,,0.17774,,no_dividend
+pde_penalty,M=N=800,6.08992390,-4.469e-04,,0.03814,,no_dividend
+pde_psor,M=N=1600,6.09024578,-1.250e-04,,0.55447,,no_dividend
+pde_penalty,M=N=1600,6.09024578,-1.250e-04,,0.10385,,no_dividend
+lsm_in_sample,"paths=1000, n_ex=50, laguerre deg 3",6.10299770,+1.263e-02,+2.439e-02,0.00373,1000,no_dividend
+lsm_out_of_sample,"paths=1000, n_ex=50, laguerre deg 3",5.95910721,-1.313e-01,-1.195e-01,0.00577,1000,no_dividend
+lsm_in_sample,"paths=1000, n_ex=50, laguerre deg 3",6.47290068,+3.825e-01,+3.943e-01,0.00331,1001,no_dividend
+lsm_out_of_sample,"paths=1000, n_ex=50, laguerre deg 3",5.93915453,-1.512e-01,-1.394e-01,0.00524,1001,no_dividend
+lsm_in_sample,"paths=1000, n_ex=50, laguerre deg 3",5.99560495,-9.477e-02,-8.300e-02,0.00331,1002,no_dividend
+lsm_out_of_sample,"paths=1000, n_ex=50, laguerre deg 3",5.84329731,-2.471e-01,-2.353e-01,0.00515,1002,no_dividend
+lsm_in_sample,"paths=1000, n_ex=50, laguerre deg 3",6.42628798,+3.359e-01,+3.477e-01,0.00328,1003,no_dividend
+lsm_out_of_sample,"paths=1000, n_ex=50, laguerre deg 3",6.34222454,+2.519e-01,+2.636e-01,0.00521,1003,no_dividend
+lsm_in_sample,"paths=1000, n_ex=50, laguerre deg 3",6.14015410,+4.978e-02,+6.155e-02,0.00326,1004,no_dividend
+lsm_out_of_sample,"paths=1000, n_ex=50, laguerre deg 3",5.75613000,-3.342e-01,-3.225e-01,0.00517,1004,no_dividend
+lsm_in_sample,"paths=3000, n_ex=50, laguerre deg 3",6.08396535,-6.405e-03,+5.362e-03,0.00732,1000,no_dividend
+lsm_out_of_sample,"paths=3000, n_ex=50, laguerre deg 3",6.07337796,-1.699e-02,-5.225e-03,0.01088,1000,no_dividend
+lsm_in_sample,"paths=3000, n_ex=50, laguerre deg 3",6.28716699,+1.968e-01,+2.086e-01,0.00722,1001,no_dividend
+lsm_out_of_sample,"paths=3000, n_ex=50, laguerre deg 3",5.88575851,-2.046e-01,-1.928e-01,0.01091,1001,no_dividend
+lsm_in_sample,"paths=3000, n_ex=50, laguerre deg 3",6.08342852,-6.942e-03,+4.825e-03,0.00727,1002,no_dividend
+lsm_out_of_sample,"paths=3000, n_ex=50, laguerre deg 3",6.01827090,-7.210e-02,-6.033e-02,0.01080,1002,no_dividend
+lsm_in_sample,"paths=3000, n_ex=50, laguerre deg 3",6.02664011,-6.373e-02,-5.196e-02,0.00727,1003,no_dividend
+lsm_out_of_sample,"paths=3000, n_ex=50, laguerre deg 3",5.94424982,-1.461e-01,-1.344e-01,0.01077,1003,no_dividend
+lsm_in_sample,"paths=3000, n_ex=50, laguerre deg 3",6.11738654,+2.702e-02,+3.878e-02,0.00724,1004,no_dividend
+lsm_out_of_sample,"paths=3000, n_ex=50, laguerre deg 3",6.03230041,-5.807e-02,-4.630e-02,0.01084,1004,no_dividend
+lsm_in_sample,"paths=10000, n_ex=50, laguerre deg 3",6.18229212,+9.192e-02,+1.037e-01,0.02133,1000,no_dividend
+lsm_out_of_sample,"paths=10000, n_ex=50, laguerre deg 3",6.02917144,-6.120e-02,-4.943e-02,0.02967,1000,no_dividend
+lsm_in_sample,"paths=10000, n_ex=50, laguerre deg 3",6.09434186,+3.971e-03,+1.574e-02,0.02011,1001,no_dividend
+lsm_out_of_sample,"paths=10000, n_ex=50, laguerre deg 3",6.07419275,-1.618e-02,-4.410e-03,0.02939,1001,no_dividend
+lsm_in_sample,"paths=10000, n_ex=50, laguerre deg 3",6.10605524,+1.568e-02,+2.745e-02,0.02062,1002,no_dividend
+lsm_out_of_sample,"paths=10000, n_ex=50, laguerre deg 3",6.08008311,-1.029e-02,+1.480e-03,0.02962,1002,no_dividend
+lsm_in_sample,"paths=10000, n_ex=50, laguerre deg 3",6.15096460,+6.059e-02,+7.236e-02,0.02008,1003,no_dividend
+lsm_out_of_sample,"paths=10000, n_ex=50, laguerre deg 3",6.05535614,-3.501e-02,-2.325e-02,0.02937,1003,no_dividend
+lsm_in_sample,"paths=10000, n_ex=50, laguerre deg 3",6.07825387,-1.212e-02,-3.492e-04,0.02097,1004,no_dividend
+lsm_out_of_sample,"paths=10000, n_ex=50, laguerre deg 3",6.03460403,-5.577e-02,-4.400e-02,0.02951,1004,no_dividend
+lsm_in_sample,"paths=30000, n_ex=50, laguerre deg 3",6.13886454,+4.849e-02,+6.026e-02,0.06217,1000,no_dividend
+lsm_out_of_sample,"paths=30000, n_ex=50, laguerre deg 3",6.06003181,-3.034e-02,-1.857e-02,0.08630,1000,no_dividend
+lsm_in_sample,"paths=30000, n_ex=50, laguerre deg 3",6.07786856,-1.250e-02,-7.345e-04,0.09126,1001,no_dividend
+lsm_out_of_sample,"paths=30000, n_ex=50, laguerre deg 3",6.03107075,-5.930e-02,-4.753e-02,0.08722,1001,no_dividend
+lsm_in_sample,"paths=30000, n_ex=50, laguerre deg 3",6.06027473,-3.010e-02,-1.833e-02,0.05978,1002,no_dividend
+lsm_out_of_sample,"paths=30000, n_ex=50, laguerre deg 3",6.06908756,-2.128e-02,-9.516e-03,0.08567,1002,no_dividend
+lsm_in_sample,"paths=30000, n_ex=50, laguerre deg 3",6.12002138,+2.965e-02,+4.142e-02,0.06025,1003,no_dividend
+lsm_out_of_sample,"paths=30000, n_ex=50, laguerre deg 3",6.02532351,-6.505e-02,-5.328e-02,0.08446,1003,no_dividend
+lsm_in_sample,"paths=30000, n_ex=50, laguerre deg 3",6.10658170,+1.621e-02,+2.798e-02,0.05858,1004,no_dividend
+lsm_out_of_sample,"paths=30000, n_ex=50, laguerre deg 3",6.03007933,-6.029e-02,-4.852e-02,0.08429,1004,no_dividend
+lsm_in_sample,"paths=100000, n_ex=50, laguerre deg 3",6.08136904,-9.002e-03,+2.766e-03,0.21957,1000,no_dividend
+lsm_out_of_sample,"paths=100000, n_ex=50, laguerre deg 3",6.08301296,-7.358e-03,+4.410e-03,0.30022,1000,no_dividend
+lsm_in_sample,"paths=100000, n_ex=50, laguerre deg 3",6.09065377,+2.830e-04,+1.205e-02,0.22641,1001,no_dividend
+lsm_out_of_sample,"paths=100000, n_ex=50, laguerre deg 3",6.05473479,-3.564e-02,-2.387e-02,0.31807,1001,no_dividend
+lsm_in_sample,"paths=100000, n_ex=50, laguerre deg 3",6.07875962,-1.161e-02,+1.565e-04,0.22770,1002,no_dividend
+lsm_out_of_sample,"paths=100000, n_ex=50, laguerre deg 3",6.06855938,-2.181e-02,-1.004e-02,0.30467,1002,no_dividend
+lsm_in_sample,"paths=100000, n_ex=50, laguerre deg 3",6.09096675,+5.959e-04,+1.236e-02,0.22438,1003,no_dividend
+lsm_out_of_sample,"paths=100000, n_ex=50, laguerre deg 3",6.10399559,+1.362e-02,+2.539e-02,0.30634,1003,no_dividend
+lsm_in_sample,"paths=100000, n_ex=50, laguerre deg 3",6.07845328,-1.192e-02,-1.498e-04,0.22338,1004,no_dividend
+lsm_out_of_sample,"paths=100000, n_ex=50, laguerre deg 3",6.07013779,-2.023e-02,-8.465e-03,0.30864,1004,no_dividend
+lsm_in_sample,"paths=300000, n_ex=50, laguerre deg 3",6.07591300,-1.446e-02,-2.690e-03,0.79305,1000,no_dividend
+lsm_out_of_sample,"paths=300000, n_ex=50, laguerre deg 3",6.06637656,-2.399e-02,-1.223e-02,0.98796,1000,no_dividend
+lsm_in_sample,"paths=300000, n_ex=50, laguerre deg 3",6.07478883,-1.558e-02,-3.814e-03,0.78661,1001,no_dividend
+lsm_out_of_sample,"paths=300000, n_ex=50, laguerre deg 3",6.06830143,-2.207e-02,-1.030e-02,0.97390,1001,no_dividend
+lsm_in_sample,"paths=300000, n_ex=50, laguerre deg 3",6.07182006,-1.855e-02,-6.783e-03,0.72859,1002,no_dividend
+lsm_out_of_sample,"paths=300000, n_ex=50, laguerre deg 3",6.07084021,-1.953e-02,-7.763e-03,1.01283,1002,no_dividend
+lsm_in_sample,"paths=300000, n_ex=50, laguerre deg 3",6.08721440,-3.156e-03,+8.611e-03,0.71529,1003,no_dividend
+lsm_out_of_sample,"paths=300000, n_ex=50, laguerre deg 3",6.08936667,-1.004e-03,+1.076e-02,0.98006,1003,no_dividend
+lsm_in_sample,"paths=300000, n_ex=50, laguerre deg 3",6.07439794,-1.597e-02,-4.205e-03,0.73379,1004,no_dividend
+lsm_out_of_sample,"paths=300000, n_ex=50, laguerre deg 3",6.06968090,-2.069e-02,-8.922e-03,1.00120,1004,no_dividend
+lsm_in_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07357686,-1.679e-02,-5.026e-03,2.57161,1000,no_dividend
+lsm_out_of_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07287529,-1.750e-02,-5.728e-03,3.26407,1000,no_dividend
+lsm_in_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07222327,-1.815e-02,-6.380e-03,2.31120,1001,no_dividend
+lsm_out_of_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07093070,-1.944e-02,-7.672e-03,3.16730,1001,no_dividend
+lsm_in_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07540335,-1.497e-02,-3.200e-03,2.67491,1002,no_dividend
+lsm_out_of_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07537573,-1.500e-02,-3.227e-03,3.39934,1002,no_dividend
+lsm_in_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07595343,-1.442e-02,-2.650e-03,2.32594,1003,no_dividend
+lsm_out_of_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.06798847,-2.238e-02,-1.061e-02,3.43068,1003,no_dividend
+lsm_in_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07452807,-1.584e-02,-4.075e-03,2.32519,1004,no_dividend
+lsm_out_of_sample,"paths=1000000, n_ex=50, laguerre deg 3",6.07015761,-2.021e-02,-8.445e-03,3.16931,1004,no_dividend
+tree,N=250,7.411710,+4.38e-03,,0.0021,,one_dividend_put
+tree,N=500,7.411258,+3.93e-03,,0.0047,,one_dividend_put
+tree,N=1000,7.409331,+2.00e-03,,0.0110,,one_dividend_put
+tree,N=2000,7.408181,+8.54e-04,,0.0286,,one_dividend_put
+tree,N=4000,7.407713,+3.85e-04,,0.0856,,one_dividend_put
+tree_bermudan,"N=250, n_ex=50",7.391582,-1.57e-02,+7.14e-03,0.0009,,one_dividend_put
+tree_bermudan,"N=500, n_ex=50",7.389890,-1.74e-02,+5.45e-03,0.0016,,one_dividend_put
+tree_bermudan,"N=1000, n_ex=50",7.387195,-2.01e-02,+2.76e-03,0.0032,,one_dividend_put
+tree_bermudan,"N=2000, n_ex=50",7.385708,-2.16e-02,+1.27e-03,0.0066,,one_dividend_put
+tree_reference,n_base=1000,7.407245,-8.22e-05,,0.2504,,one_dividend_put
+pde_penalty,M=N=100,7.382186,-2.51e-02,,0.0032,,one_dividend_put
+pde_penalty,M=N=200,7.400790,-6.54e-03,,0.0067,,one_dividend_put
+pde_penalty,M=N=400,7.405645,-1.68e-03,,0.0151,,one_dividend_put
+pde_penalty,M=N=800,7.406873,-4.54e-04,,0.0375,,one_dividend_put
+pde_penalty,M=N=1600,7.407203,-1.25e-04,,0.1047,,one_dividend_put
+lsm_in_sample,"paths=10000, n_ex=50",7.329984,-7.73e-02,-5.45e-02,0.0220,4242,one_dividend_put
+lsm_out_of_sample,"paths=10000, n_ex=50, n_eval=500000",7.382026,-2.53e-02,-2.41e-03,0.4618,4242,one_dividend_put
+lsm_in_sample,"paths=10000, n_ex=50",7.360218,-4.71e-02,-2.42e-02,0.0218,4243,one_dividend_put
+lsm_out_of_sample,"paths=10000, n_ex=50, n_eval=500000",7.347773,-5.96e-02,-3.67e-02,0.4611,4243,one_dividend_put
+lsm_in_sample,"paths=10000, n_ex=50",7.373208,-3.41e-02,-1.12e-02,0.0218,4244,one_dividend_put
+lsm_out_of_sample,"paths=10000, n_ex=50, n_eval=500000",7.361493,-4.58e-02,-2.29e-02,0.4631,4244,one_dividend_put
+lsm_in_sample,"paths=100000, n_ex=50",7.363245,-4.41e-02,-2.12e-02,0.2115,4242,one_dividend_put
+lsm_out_of_sample,"paths=100000, n_ex=50, n_eval=500000",7.381901,-2.54e-02,-2.54e-03,0.6784,4242,one_dividend_put
+lsm_in_sample,"paths=100000, n_ex=50",7.388917,-1.84e-02,+4.48e-03,0.2237,4243,one_dividend_put
+lsm_out_of_sample,"paths=100000, n_ex=50, n_eval=500000",7.357410,-4.99e-02,-2.70e-02,0.6646,4243,one_dividend_put
+lsm_in_sample,"paths=100000, n_ex=50",7.383825,-2.35e-02,-6.13e-04,0.2173,4244,one_dividend_put
+lsm_out_of_sample,"paths=100000, n_ex=50, n_eval=500000",7.372690,-3.46e-02,-1.17e-02,0.6574,4244,one_dividend_put
+lsm_in_sample,"paths=500000, n_ex=50",7.370283,-3.70e-02,-1.42e-02,1.4805,4242,one_dividend_put
+lsm_out_of_sample,"paths=500000, n_ex=50, n_eval=500000",7.382788,-2.45e-02,-1.65e-03,1.9538,4242,one_dividend_put
+lsm_in_sample,"paths=500000, n_ex=50",7.372529,-3.48e-02,-1.19e-02,1.3566,4243,one_dividend_put
+lsm_out_of_sample,"paths=500000, n_ex=50, n_eval=500000",7.361872,-4.55e-02,-2.26e-02,1.8075,4243,one_dividend_put
+lsm_in_sample,"paths=500000, n_ex=50",7.373445,-3.39e-02,-1.10e-02,1.3605,4244,one_dividend_put
+lsm_out_of_sample,"paths=500000, n_ex=50, n_eval=500000",7.371543,-3.58e-02,-1.29e-02,1.8069,4244,one_dividend_put
+tree,N=252,7.241873,+3.82e-02,,0.0022,,quarterly_put
+tree,N=500,7.223584,+1.99e-02,,0.0048,,quarterly_put
+tree,N=1000,7.209627,+5.91e-03,,0.0113,,quarterly_put
+tree,N=2000,7.205317,+1.60e-03,,0.0289,,quarterly_put
+tree,N=4000,7.205968,+2.26e-03,,0.0861,,quarterly_put
+tree_bermudan,"N=288, n_ex=48",7.212561,+8.85e-03,+3.80e-02,0.0010,,quarterly_put
+tree_bermudan,"N=528, n_ex=48",7.195843,-7.87e-03,+2.13e-02,0.0017,,quarterly_put
+tree_bermudan,"N=1008, n_ex=48",7.181991,-2.17e-02,+7.47e-03,0.0032,,quarterly_put
+tree_bermudan,"N=2016, n_ex=48",7.177285,-2.64e-02,+2.76e-03,0.0067,,quarterly_put
+tree_reference,n_base=1000,7.206605,+2.89e-03,,0.2518,,quarterly_put
+pde_penalty,M=N=100,7.178629,-2.51e-02,,0.0038,,quarterly_put
+pde_penalty,M=N=200,7.197303,-6.41e-03,,0.0078,,quarterly_put
+pde_penalty,M=N=400,7.202024,-1.69e-03,,0.0168,,quarterly_put
+pde_penalty,M=N=800,7.203256,-4.57e-04,,0.0417,,quarterly_put
+pde_penalty,M=N=1600,7.203586,-1.26e-04,,0.1151,,quarterly_put
+lsm_in_sample,"paths=10000, n_ex=48",7.147480,-5.62e-02,-2.70e-02,0.0212,4242,quarterly_put
+lsm_out_of_sample,"paths=10000, n_ex=48, n_eval=500000",7.156786,-4.69e-02,-1.77e-02,0.4722,4242,quarterly_put
+lsm_in_sample,"paths=10000, n_ex=48",7.115616,-8.81e-02,-5.89e-02,0.0213,4243,quarterly_put
+lsm_out_of_sample,"paths=10000, n_ex=48, n_eval=500000",7.145664,-5.80e-02,-2.89e-02,0.4664,4243,quarterly_put
+lsm_in_sample,"paths=10000, n_ex=48",7.239430,+3.57e-02,+6.49e-02,0.0210,4244,quarterly_put
+lsm_out_of_sample,"paths=10000, n_ex=48, n_eval=500000",7.137033,-6.67e-02,-3.75e-02,0.4819,4244,quarterly_put
+lsm_in_sample,"paths=100000, n_ex=48",7.148847,-5.49e-02,-2.57e-02,0.2334,4242,quarterly_put
+lsm_out_of_sample,"paths=100000, n_ex=48, n_eval=500000",7.169435,-3.43e-02,-5.09e-03,0.6879,4242,quarterly_put
+lsm_in_sample,"paths=100000, n_ex=48",7.181657,-2.21e-02,+7.13e-03,0.2372,4243,quarterly_put
+lsm_out_of_sample,"paths=100000, n_ex=48, n_eval=500000",7.151330,-5.24e-02,-2.32e-02,0.6932,4243,quarterly_put
+lsm_in_sample,"paths=100000, n_ex=48",7.174312,-2.94e-02,-2.12e-04,0.2416,4244,quarterly_put
+lsm_out_of_sample,"paths=100000, n_ex=48, n_eval=500000",7.148745,-5.50e-02,-2.58e-02,0.6994,4244,quarterly_put
+lsm_in_sample,"paths=500000, n_ex=48",7.172532,-3.12e-02,-1.99e-03,1.4448,4242,quarterly_put
+lsm_out_of_sample,"paths=500000, n_ex=48, n_eval=500000",7.169217,-3.45e-02,-5.31e-03,1.9400,4242,quarterly_put
+lsm_in_sample,"paths=500000, n_ex=48",7.171336,-3.24e-02,-3.19e-03,1.4412,4243,quarterly_put
+lsm_out_of_sample,"paths=500000, n_ex=48, n_eval=500000",7.155940,-4.78e-02,-1.86e-02,1.9030,4243,quarterly_put
+lsm_in_sample,"paths=500000, n_ex=48",7.182666,-2.10e-02,+8.14e-03,1.4335,4244,quarterly_put
+lsm_out_of_sample,"paths=500000, n_ex=48, n_eval=500000",7.153080,-5.06e-02,-2.14e-02,1.8937,4244,quarterly_put
+tree,N=250,7.920045,+5.64e-03,,0.0021,,large_dividend_call
+tree,N=500,7.917311,+2.90e-03,,0.0047,,large_dividend_call
+tree,N=1000,7.915323,+9.14e-04,,0.0111,,large_dividend_call
+tree,N=2000,7.914123,-2.86e-04,,0.0289,,large_dividend_call
+tree,N=4000,7.914531,+1.21e-04,,0.0855,,large_dividend_call
+tree_bermudan,"N=250, n_ex=50",7.920045,+5.64e-03,+5.82e-03,0.0009,,large_dividend_call
+tree_bermudan,"N=500, n_ex=50",7.917311,+2.90e-03,+3.09e-03,0.0016,,large_dividend_call
+tree_bermudan,"N=1000, n_ex=50",7.915323,+9.14e-04,+1.10e-03,0.0031,,large_dividend_call
+tree_bermudan,"N=2000, n_ex=50",7.914123,-2.86e-04,-9.90e-05,0.0066,,large_dividend_call
+tree_reference,n_base=1000,7.914525,+1.15e-04,,0.2507,,large_dividend_call
+pde_penalty,M=N=100,7.900945,-1.35e-02,,0.0031,,large_dividend_call
+pde_penalty,M=N=200,7.911022,-3.39e-03,,0.0064,,large_dividend_call
+pde_penalty,M=N=400,7.913429,-9.81e-04,,0.0143,,large_dividend_call
+pde_penalty,M=N=800,7.914169,-2.40e-04,,0.0363,,large_dividend_call
+pde_penalty,M=N=1600,7.914279,-1.30e-04,,0.1003,,large_dividend_call
+lsm_in_sample,"paths=10000, n_ex=50",7.871733,-4.27e-02,-4.25e-02,0.0208,4242,large_dividend_call
+lsm_out_of_sample,"paths=10000, n_ex=50, n_eval=500000",7.808455,-1.06e-01,-1.06e-01,0.4403,4242,large_dividend_call
+lsm_in_sample,"paths=10000, n_ex=50",7.842853,-7.16e-02,-7.14e-02,0.0206,4243,large_dividend_call
+lsm_out_of_sample,"paths=10000, n_ex=50, n_eval=500000",7.852701,-6.17e-02,-6.15e-02,0.4462,4243,large_dividend_call
+lsm_in_sample,"paths=10000, n_ex=50",7.945816,+3.14e-02,+3.16e-02,0.0205,4244,large_dividend_call
+lsm_out_of_sample,"paths=10000, n_ex=50, n_eval=500000",7.877999,-3.64e-02,-3.62e-02,0.4476,4244,large_dividend_call
+lsm_in_sample,"paths=100000, n_ex=50",7.921976,+7.57e-03,+7.75e-03,0.2007,4242,large_dividend_call
+lsm_out_of_sample,"paths=100000, n_ex=50, n_eval=500000",7.886899,-2.75e-02,-2.73e-02,0.6295,4242,large_dividend_call
+lsm_in_sample,"paths=100000, n_ex=50",7.888114,-2.63e-02,-2.61e-02,0.2119,4243,large_dividend_call
+lsm_out_of_sample,"paths=100000, n_ex=50, n_eval=500000",7.866908,-4.75e-02,-4.73e-02,0.6397,4243,large_dividend_call
+lsm_in_sample,"paths=100000, n_ex=50",7.896345,-1.81e-02,-1.79e-02,0.2050,4244,large_dividend_call
+lsm_out_of_sample,"paths=100000, n_ex=50, n_eval=500000",7.873648,-4.08e-02,-4.06e-02,0.6614,4244,large_dividend_call
+lsm_in_sample,"paths=500000, n_ex=50",7.888899,-2.55e-02,-2.53e-02,1.3026,4242,large_dividend_call
+lsm_out_of_sample,"paths=500000, n_ex=50, n_eval=500000",7.887354,-2.71e-02,-2.69e-02,1.7378,4242,large_dividend_call
+lsm_in_sample,"paths=500000, n_ex=50",7.875012,-3.94e-02,-3.92e-02,1.2498,4243,large_dividend_call
+lsm_out_of_sample,"paths=500000, n_ex=50, n_eval=500000",7.857688,-5.67e-02,-5.65e-02,1.6813,4243,large_dividend_call
+lsm_in_sample,"paths=500000, n_ex=50",7.877581,-3.68e-02,-3.66e-02,1.2453,4244,large_dividend_call
+lsm_out_of_sample,"paths=500000, n_ex=50, n_eval=500000",7.865310,-4.91e-02,-4.89e-02,1.6781,4244,large_dividend_call

@@ -1,0 +1,100 @@
+scenario,method,config,seed,price,error_vs_reference,error_vs_bermudan,runtime_seconds,ci95_low,ci95_high
+one_dividend_put,tree,N=250,,7.411710,+4.38e-03,,0.0021,,
+one_dividend_put,tree,N=500,,7.411258,+3.93e-03,,0.0047,,
+one_dividend_put,tree,N=1000,,7.409331,+2.00e-03,,0.0110,,
+one_dividend_put,tree,N=2000,,7.408181,+8.54e-04,,0.0286,,
+one_dividend_put,tree,N=4000,,7.407713,+3.85e-04,,0.0856,,
+one_dividend_put,tree_bermudan,"N=250, n_ex=50",,7.391582,-1.57e-02,+7.14e-03,0.0009,,
+one_dividend_put,tree_bermudan,"N=500, n_ex=50",,7.389890,-1.74e-02,+5.45e-03,0.0016,,
+one_dividend_put,tree_bermudan,"N=1000, n_ex=50",,7.387195,-2.01e-02,+2.76e-03,0.0032,,
+one_dividend_put,tree_bermudan,"N=2000, n_ex=50",,7.385708,-2.16e-02,+1.27e-03,0.0066,,
+one_dividend_put,tree_reference,n_base=1000,,7.407245,-8.22e-05,,0.2504,,
+one_dividend_put,pde_penalty,M=N=100,,7.382186,-2.51e-02,,0.0032,,
+one_dividend_put,pde_penalty,M=N=200,,7.400790,-6.54e-03,,0.0067,,
+one_dividend_put,pde_penalty,M=N=400,,7.405645,-1.68e-03,,0.0151,,
+one_dividend_put,pde_penalty,M=N=800,,7.406873,-4.54e-04,,0.0375,,
+one_dividend_put,pde_penalty,M=N=1600,,7.407203,-1.25e-04,,0.1047,,
+one_dividend_put,lsm_in_sample,"paths=10000, n_ex=50",4242,7.329984,-7.73e-02,-5.45e-02,0.0220,7.24190,7.41807
+one_dividend_put,lsm_out_of_sample,"paths=10000, n_ex=50, n_eval=500000",4242,7.382026,-2.53e-02,-2.41e-03,0.4618,7.36942,7.39464
+one_dividend_put,lsm_in_sample,"paths=10000, n_ex=50",4243,7.360218,-4.71e-02,-2.42e-02,0.0218,7.27107,7.44936
+one_dividend_put,lsm_out_of_sample,"paths=10000, n_ex=50, n_eval=500000",4243,7.347773,-5.96e-02,-3.67e-02,0.4611,7.33515,7.36040
+one_dividend_put,lsm_in_sample,"paths=10000, n_ex=50",4244,7.373208,-3.41e-02,-1.12e-02,0.0218,7.28231,7.46411
+one_dividend_put,lsm_out_of_sample,"paths=10000, n_ex=50, n_eval=500000",4244,7.361493,-4.58e-02,-2.29e-02,0.4631,7.34858,7.37441
+one_dividend_put,lsm_in_sample,"paths=100000, n_ex=50",4242,7.363245,-4.41e-02,-2.12e-02,0.2115,7.33452,7.39197
+one_dividend_put,lsm_out_of_sample,"paths=100000, n_ex=50, n_eval=500000",4242,7.381901,-2.54e-02,-2.54e-03,0.6784,7.36910,7.39471
+one_dividend_put,lsm_in_sample,"paths=100000, n_ex=50",4243,7.388917,-1.84e-02,+4.48e-03,0.2237,7.36062,7.41722
+one_dividend_put,lsm_out_of_sample,"paths=100000, n_ex=50, n_eval=500000",4243,7.357410,-4.99e-02,-2.70e-02,0.6646,7.34467,7.37015
+one_dividend_put,lsm_in_sample,"paths=100000, n_ex=50",4244,7.383825,-2.35e-02,-6.13e-04,0.2173,7.35529,7.41236
+one_dividend_put,lsm_out_of_sample,"paths=100000, n_ex=50, n_eval=500000",4244,7.372690,-3.46e-02,-1.17e-02,0.6574,7.35992,7.38546
+one_dividend_put,lsm_in_sample,"paths=500000, n_ex=50",4242,7.370283,-3.70e-02,-1.42e-02,1.4805,7.35748,7.38308
+one_dividend_put,lsm_out_of_sample,"paths=500000, n_ex=50, n_eval=500000",4242,7.382788,-2.45e-02,-1.65e-03,1.9538,7.36995,7.39562
+one_dividend_put,lsm_in_sample,"paths=500000, n_ex=50",4243,7.372529,-3.48e-02,-1.19e-02,1.3566,7.35974,7.38531
+one_dividend_put,lsm_out_of_sample,"paths=500000, n_ex=50, n_eval=500000",4243,7.361872,-4.55e-02,-2.26e-02,1.8075,7.34903,7.37471
+one_dividend_put,lsm_in_sample,"paths=500000, n_ex=50",4244,7.373445,-3.39e-02,-1.10e-02,1.3605,7.36062,7.38627
+one_dividend_put,lsm_out_of_sample,"paths=500000, n_ex=50, n_eval=500000",4244,7.371543,-3.58e-02,-1.29e-02,1.8069,7.35870,7.38438
+quarterly_put,tree,N=252,,7.241873,+3.82e-02,,0.0022,,
+quarterly_put,tree,N=500,,7.223584,+1.99e-02,,0.0048,,
+quarterly_put,tree,N=1000,,7.209627,+5.91e-03,,0.0113,,
+quarterly_put,tree,N=2000,,7.205317,+1.60e-03,,0.0289,,
+quarterly_put,tree,N=4000,,7.205968,+2.26e-03,,0.0861,,
+quarterly_put,tree_bermudan,"N=288, n_ex=48",,7.212561,+8.85e-03,+3.80e-02,0.0010,,
+quarterly_put,tree_bermudan,"N=528, n_ex=48",,7.195843,-7.87e-03,+2.13e-02,0.0017,,
+quarterly_put,tree_bermudan,"N=1008, n_ex=48",,7.181991,-2.17e-02,+7.47e-03,0.0032,,
+quarterly_put,tree_bermudan,"N=2016, n_ex=48",,7.177285,-2.64e-02,+2.76e-03,0.0067,,
+quarterly_put,tree_reference,n_base=1000,,7.206605,+2.89e-03,,0.2518,,
+quarterly_put,pde_penalty,M=N=100,,7.178629,-2.51e-02,,0.0038,,
+quarterly_put,pde_penalty,M=N=200,,7.197303,-6.41e-03,,0.0078,,
+quarterly_put,pde_penalty,M=N=400,,7.202024,-1.69e-03,,0.0168,,
+quarterly_put,pde_penalty,M=N=800,,7.203256,-4.57e-04,,0.0417,,
+quarterly_put,pde_penalty,M=N=1600,,7.203586,-1.26e-04,,0.1151,,
+quarterly_put,lsm_in_sample,"paths=10000, n_ex=48",4242,7.147480,-5.62e-02,-2.70e-02,0.0212,7.05143,7.24354
+quarterly_put,lsm_out_of_sample,"paths=10000, n_ex=48, n_eval=500000",4242,7.156786,-4.69e-02,-1.77e-02,0.4722,7.14329,7.17028
+quarterly_put,lsm_in_sample,"paths=10000, n_ex=48",4243,7.115616,-8.81e-02,-5.89e-02,0.0213,7.02372,7.20751
+quarterly_put,lsm_out_of_sample,"paths=10000, n_ex=48, n_eval=500000",4243,7.145664,-5.80e-02,-2.89e-02,0.4664,7.13265,7.15868
+quarterly_put,lsm_in_sample,"paths=10000, n_ex=48",4244,7.239430,+3.57e-02,+6.49e-02,0.0210,7.13622,7.34264
+quarterly_put,lsm_out_of_sample,"paths=10000, n_ex=48, n_eval=500000",4244,7.137033,-6.67e-02,-3.75e-02,0.4819,7.12255,7.15151
+quarterly_put,lsm_in_sample,"paths=100000, n_ex=48",4242,7.148847,-5.49e-02,-2.57e-02,0.2334,7.11791,7.17979
+quarterly_put,lsm_out_of_sample,"paths=100000, n_ex=48, n_eval=500000",4242,7.169435,-3.43e-02,-5.09e-03,0.6879,7.15559,7.18328
+quarterly_put,lsm_in_sample,"paths=100000, n_ex=48",4243,7.181657,-2.21e-02,+7.13e-03,0.2372,7.15088,7.21244
+quarterly_put,lsm_out_of_sample,"paths=100000, n_ex=48, n_eval=500000",4243,7.151330,-5.24e-02,-2.32e-02,0.6932,7.13754,7.16512
+quarterly_put,lsm_in_sample,"paths=100000, n_ex=48",4244,7.174312,-2.94e-02,-2.12e-04,0.2416,7.14298,7.20565
+quarterly_put,lsm_out_of_sample,"paths=100000, n_ex=48, n_eval=500000",4244,7.148745,-5.50e-02,-2.58e-02,0.6994,7.13473,7.16276
+quarterly_put,lsm_in_sample,"paths=500000, n_ex=48",4242,7.172532,-3.12e-02,-1.99e-03,1.4448,7.15844,7.18662
+quarterly_put,lsm_out_of_sample,"paths=500000, n_ex=48, n_eval=500000",4242,7.169217,-3.45e-02,-5.31e-03,1.9400,7.15511,7.18332
+quarterly_put,lsm_in_sample,"paths=500000, n_ex=48",4243,7.171336,-3.24e-02,-3.19e-03,1.4412,7.15736,7.18532
+quarterly_put,lsm_out_of_sample,"paths=500000, n_ex=48, n_eval=500000",4243,7.155940,-4.78e-02,-1.86e-02,1.9030,7.14194,7.16994
+quarterly_put,lsm_in_sample,"paths=500000, n_ex=48",4244,7.182666,-2.10e-02,+8.14e-03,1.4335,7.16868,7.19665
+quarterly_put,lsm_out_of_sample,"paths=500000, n_ex=48, n_eval=500000",4244,7.153080,-5.06e-02,-2.14e-02,1.8937,7.13909,7.16707
+large_dividend_call,tree,N=250,,7.920045,+5.64e-03,,0.0021,,
+large_dividend_call,tree,N=500,,7.917311,+2.90e-03,,0.0047,,
+large_dividend_call,tree,N=1000,,7.915323,+9.14e-04,,0.0111,,
+large_dividend_call,tree,N=2000,,7.914123,-2.86e-04,,0.0289,,
+large_dividend_call,tree,N=4000,,7.914531,+1.21e-04,,0.0855,,
+large_dividend_call,tree_bermudan,"N=250, n_ex=50",,7.920045,+5.64e-03,+5.82e-03,0.0009,,
+large_dividend_call,tree_bermudan,"N=500, n_ex=50",,7.917311,+2.90e-03,+3.09e-03,0.0016,,
+large_dividend_call,tree_bermudan,"N=1000, n_ex=50",,7.915323,+9.14e-04,+1.10e-03,0.0031,,
+large_dividend_call,tree_bermudan,"N=2000, n_ex=50",,7.914123,-2.86e-04,-9.90e-05,0.0066,,
+large_dividend_call,tree_reference,n_base=1000,,7.914525,+1.15e-04,,0.2507,,
+large_dividend_call,pde_penalty,M=N=100,,7.900945,-1.35e-02,,0.0031,,
+large_dividend_call,pde_penalty,M=N=200,,7.911022,-3.39e-03,,0.0064,,
+large_dividend_call,pde_penalty,M=N=400,,7.913429,-9.81e-04,,0.0143,,
+large_dividend_call,pde_penalty,M=N=800,,7.914169,-2.40e-04,,0.0363,,
+large_dividend_call,pde_penalty,M=N=1600,,7.914279,-1.30e-04,,0.1003,,
+large_dividend_call,lsm_in_sample,"paths=10000, n_ex=50",4242,7.871733,-4.27e-02,-4.25e-02,0.0208,7.74856,7.99491
+large_dividend_call,lsm_out_of_sample,"paths=10000, n_ex=50, n_eval=500000",4242,7.808455,-1.06e-01,-1.06e-01,0.4403,7.79080,7.82611
+large_dividend_call,lsm_in_sample,"paths=10000, n_ex=50",4243,7.842853,-7.16e-02,-7.14e-02,0.0206,7.70109,7.98462
+large_dividend_call,lsm_out_of_sample,"paths=10000, n_ex=50, n_eval=500000",4243,7.852701,-6.17e-02,-6.15e-02,0.4462,7.83329,7.87211
+large_dividend_call,lsm_in_sample,"paths=10000, n_ex=50",4244,7.945816,+3.14e-02,+3.16e-02,0.0205,7.80488,8.08675
+large_dividend_call,lsm_out_of_sample,"paths=10000, n_ex=50, n_eval=500000",4244,7.877999,-3.64e-02,-3.62e-02,0.4476,7.85816,7.89783
+large_dividend_call,lsm_in_sample,"paths=100000, n_ex=50",4242,7.921976,+7.57e-03,+7.75e-03,0.2007,7.87784,7.96612
+large_dividend_call,lsm_out_of_sample,"paths=100000, n_ex=50, n_eval=500000",4242,7.886899,-2.75e-02,-2.73e-02,0.6295,7.86716,7.90664
+large_dividend_call,lsm_in_sample,"paths=100000, n_ex=50",4243,7.888114,-2.63e-02,-2.61e-02,0.2119,7.84389,7.93234
+large_dividend_call,lsm_out_of_sample,"paths=100000, n_ex=50, n_eval=500000",4243,7.866908,-4.75e-02,-4.73e-02,0.6397,7.84714,7.88667
+large_dividend_call,lsm_in_sample,"paths=100000, n_ex=50",4244,7.896345,-1.81e-02,-1.79e-02,0.2050,7.85194,7.94075
+large_dividend_call,lsm_out_of_sample,"paths=100000, n_ex=50, n_eval=500000",4244,7.873648,-4.08e-02,-4.06e-02,0.6614,7.85378,7.89352
+large_dividend_call,lsm_in_sample,"paths=500000, n_ex=50",4242,7.888899,-2.55e-02,-2.53e-02,1.3026,7.86912,7.90868
+large_dividend_call,lsm_out_of_sample,"paths=500000, n_ex=50, n_eval=500000",4242,7.887354,-2.71e-02,-2.69e-02,1.7378,7.86755,7.90716
+large_dividend_call,lsm_in_sample,"paths=500000, n_ex=50",4243,7.875012,-3.94e-02,-3.92e-02,1.2498,7.85529,7.89473
+large_dividend_call,lsm_out_of_sample,"paths=500000, n_ex=50, n_eval=500000",4243,7.857688,-5.67e-02,-5.65e-02,1.6813,7.83801,7.87737
+large_dividend_call,lsm_in_sample,"paths=500000, n_ex=50",4244,7.877581,-3.68e-02,-3.66e-02,1.2453,7.85784,7.89732
+large_dividend_call,lsm_out_of_sample,"paths=500000, n_ex=50, n_eval=500000",4244,7.865310,-4.91e-02,-4.89e-02,1.6781,7.84555,7.88507

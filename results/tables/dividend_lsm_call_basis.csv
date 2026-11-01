@@ -1,0 +1,5 @@
+basis,degree,mean_oos_minus_bermudan,sd_across_seeds,share_of_early_exercises_off_ex_date
+laguerre,3,-0.0285,0.0045,0.49
+monomial,3,-0.0340,0.0023,0.51
+monomial,5,-0.0025,0.0014,0.05
+monomial + European value,3,-0.0129,0.0026,0.30

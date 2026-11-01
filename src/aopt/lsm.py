@@ -59,7 +59,9 @@ def design_matrix(params: OptionParams, s: NDArray[np.float64], k: int, n_ex: in
     X = basis_matrix(s, params.K, family, degree, params.option_type)
     if european_basis:
         tau = params.T * (1.0 - k / n_ex)
-        ev = bs_price(s, params.K, tau, params.r, params.q, params.sigma, params.option_type) / params.K
+        s_eur = s - params.dividend_pv(params.T - tau, inclusive=True) if params.dividends else s  # escrowed spot (approximate)
+        s_eur = np.maximum(s_eur, 1e-8 * params.K)
+        ev = bs_price(s_eur, params.K, tau, params.r, params.q, params.sigma, params.option_type) / params.K
         X = np.column_stack([X, ev])
 
     return X
@@ -90,9 +92,31 @@ def simulate_paths(params: OptionParams, n_paths: int, n_ex: int, rng: np.random
 
     out *= vol
     out += drift
-    np.cumsum(out, axis=1, out=out)
-    out += math.log(params.S)
+    start = np.full(n_paths, math.log(params.S))
+    prev, divs = 0, div_steps(params, n_ex)
+    for stop in [*sorted(divs), n_ex]:  # segments between ex-dates; the cum-dividend price is stored
+        seg = out[:, prev:stop]
+        np.cumsum(seg, axis=1, out=seg)
+        seg += start[:, None]
+        if stop < n_ex:
+            start = np.log(params.ex_dividend(np.exp(seg[:, -1]), divs[stop]))
+
+        prev = stop
+
     np.exp(out, out=out)
+
+    return out
+
+
+def div_steps(params: OptionParams, n_ex: int) -> dict[int, float]:
+    """{exercise-date index k: cash dividend}; ex-dates must lie exactly on the exercise grid t_k = k*T/n_ex."""
+    out: dict[int, float] = {}
+    for t, d in params.dividends:
+        k = round(t * n_ex / params.T)
+        if abs(k * params.T / n_ex - t) > 1e-9 * params.T or not 1 <= k <= n_ex - 1:
+            raise ValueError(f"ex-date {t} is not on the exercise grid k*T/n_ex (n_ex={n_ex}); choose n_ex so that t*n_ex/T is an integer")
+        
+        out[k] = d
 
     return out
 
@@ -156,6 +180,7 @@ def evaluate_policy(params: OptionParams, coeffs: NDArray[np.float64], degree: i
     dt = params.T / n_ex
     drift = (params.r - params.q - 0.5 * params.sigma**2) * dt
     vol = params.sigma * math.sqrt(dt)
+    divs = div_steps(params, n_ex)
     chunk_size = max(2, chunk_size - chunk_size % 2) if antithetic else max(1, chunk_size)
     count, mean, m2 = 0, 0.0, 0.0  # Chan et al. running merge of chunk statistics
     remaining = n_eval
@@ -167,6 +192,9 @@ def evaluate_policy(params: OptionParams, coeffs: NDArray[np.float64], degree: i
         alive = np.ones(c, dtype=bool)
         value = np.zeros(c)
         for k in range(1, n_ex + 1):
+            if k - 1 in divs:  # drop at the previous date, after its exercise decision
+                logS = np.log(params.ex_dividend(np.exp(logS), divs[k - 1]))
+
             if antithetic:
                 z = rng.standard_normal(half)
                 z = np.concatenate([z, -z])
@@ -225,7 +253,7 @@ def fit_lsm(params: OptionParams, n_paths: int = 100_000, n_ex: int = 50, degree
     return result("in_sample", price, se, coeffs, n_paths, n_paths, n_ex, degree, basis, antithetic, seed, ex_idx if return_policy else None, european_basis)
 
 
-def evaluatefit(params: OptionParams, fit: LSMResult, n_eval: int | None = None, chunk_size: int = 100_000, eval_seed: int | None = None) -> LSMResult:
+def evaluate_fit(params: OptionParams, fit: LSMResult, n_eval: int | None = None, chunk_size: int = 100_000, eval_seed: int | None = None) -> LSMResult:
     """Apply a fitted policy to fresh independent paths; ``n_eval`` defaults to n_paths."""
     n_eval = fit.n_paths if n_eval is None else n_eval
     rng = np.random.default_rng([fit.seed, 1] if eval_seed is None else [eval_seed, 2])
@@ -240,7 +268,7 @@ def lsm_both(params: OptionParams, n_paths: int = 100_000, n_ex: int = 50, degre
     """Fit once; return (in-sample, out-of-sample). Training and evaluation use independent random streams."""
     fit = fit_lsm(params, n_paths, n_ex, degree, basis, seed, antithetic, return_policy, max_memory_bytes, european_basis)
 
-    return fit, evaluatefit(params, fit, n_eval, chunk_size, eval_seed)
+    return fit, evaluate_fit(params, fit, n_eval, chunk_size, eval_seed)
 
 
 def lsm_price(params: OptionParams, n_paths: int = 100_000, n_ex: int = 50, degree: int = 3, basis: BasisFamily = "laguerre", seed: int = 0, 
@@ -252,7 +280,7 @@ def lsm_price(params: OptionParams, n_paths: int = 100_000, n_ex: int = 50, degr
     
     fit = fit_lsm(params, n_paths, n_ex, degree, basis, seed, antithetic, return_policy, max_memory_bytes, european_basis)
 
-    return fit if mode == "in_sample" else evaluatefit(params, fit, n_eval, chunk_size, eval_seed)
+    return fit if mode == "in_sample" else evaluate_fit(params, fit, n_eval, chunk_size, eval_seed)
 
 
 def lsm_boundary(params: OptionParams, result: LSMResult, n_grid: int = 4000) -> tuple[NDArray[np.float64], NDArray[np.float64]]:

@@ -1,6 +1,7 @@
 """Step 3 experiments: LSM vs the Bermudan tree benchmark, basis choices, bias decomposition, boundary, Pareto data."""
 from __future__ import annotations
 import csv
+import sys
 from functools import partial
 from pathlib import Path
 import matplotlib
@@ -230,9 +231,12 @@ def boundary_plot() -> None:
         ii = np.array(sorted(st))[:-1]
         tt, ss = tt[ii], ss[ii]
         keep = ~np.isnan(ss) & (tt > 0.2) & (tt < 0.8)
-        ratio = float(np.median(ss[keep] / np.interp(tt[keep], pde_fine.boundary_t, pde_fine.boundary_S)))
+        am_at = np.interp(tt[keep], pde_fine.boundary_t, pde_fine.boundary_S)
+        ratio = float(np.median(ss[keep] / am_at))
+        mean_gap = float(np.mean(ss[keep] - am_at))
+        pred_gap = float(np.mean(am_at * (np.exp(BGK_BETA * PARAMS.sigma * np.sqrt(PARAMS.T / n_ex)) - 1.0)))
         x = PARAMS.sigma * np.sqrt(PARAMS.T / n_ex)
-        shift_rows.append(dict(n_ex=n_ex, sigma_sqrt_dt=f"{x:.5f}", measured_ratio=f"{ratio:.5f}", predicted_ratio_bgk=f"{np.exp(BGK_BETA * x):.5f}",
+        shift_rows.append(dict(n_ex=n_ex, sigma_sqrt_dt=f"{x:.5f}", measured_ratio=f"{ratio:.5f}", mean_gap_bermudan_minus_american=f"{mean_gap:.4f}", predicted_mean_gap_bgk=f"{pred_gap:.4f}", predicted_ratio_bgk=f"{np.exp(BGK_BETA * x):.5f}",
                                implied_beta=f"{np.log(ratio) / x:.3f}", share_of_predicted_shift=f"{(ratio - 1) / (np.exp(BGK_BETA * x) - 1):.2f}"))
         
     write_csv(TABLE_DIR / "boundary_shift.csv", shift_rows)
@@ -270,12 +274,17 @@ def boundary_plot() -> None:
     print(f"  fitted beta through the origin: {beta_fit:.3f}")
 
 
-def pareto_table(american: float) -> None:
+def pareto_table(american: float, benchmark: float) -> None:
     rows = []
 
-    def add(method: str, config: str, price: float, seconds: float, seed: str = "") -> None:
+    def add(method: str, config: str, price: float, seconds: float, seed: str = "", bermudan: bool = False) -> None:
         rows.append(dict(method=method, config=config, price=f"{price:.8f}", error_vs_american=f"{price - american:+.3e}",
-                         runtime_seconds=f"{seconds:.5f}", seed=seed))
+                         error_vs_bermudan=f"{price - benchmark:+.3e}" if bermudan else "", runtime_seconds=f"{seconds:.5f}", seed=seed))
+
+    for k in (2, 4, 8, 16, 32, 64):  # Bermudan tree on the LSM's N_EX dates; N must be a multiple of N_EX
+        n = N_EX * k
+        value, sec = median_runtime(partial(tree_price, PARAMS, n, False, bermudan_steps(n, N_EX)), repeats=3)
+        add("tree_bermudan", f"N={n}, n_ex={N_EX}", value, sec, bermudan=True)
 
     for n in (50, 100, 200, 400, 800, 1600, 3200):
         value, sec = median_runtime(partial(tree_price, PARAMS, n), repeats=3)
@@ -296,13 +305,13 @@ def pareto_table(american: float) -> None:
             for mode in ("in_sample", "out_of_sample"):
                 fn = partial(lsm_price, PARAMS, n, N_EX, DEFAULT_DEGREE, DEFAULT_BASIS, seed, True, mode, n)
                 res, sec = median_runtime(fn, repeats=1, warmup=0)
-                add(f"lsm_{mode}", f"paths={n}, n_ex={N_EX}, {DEFAULT_BASIS} deg {DEFAULT_DEGREE}", res.price, sec, str(seed))
+                add(f"lsm_{mode}", f"paths={n}, n_ex={N_EX}, {DEFAULT_BASIS} deg {DEFAULT_DEGREE}", res.price, sec, str(seed), bermudan=True)
 
     write_csv(TABLE_DIR / "pareto_raw.csv", rows)
     print(f"  wrote {len(rows)} rows to pareto_raw.csv")
 
 
-def main() -> None:
+def main(stages: set[str]) -> None:
     FIG_DIR.mkdir(parents=True, exist_ok=True)
     TABLE_DIR.mkdir(parents=True, exist_ok=True)
     print("Bermudan tree benchmark vs n_ex")
@@ -312,17 +321,13 @@ def main() -> None:
 
     benchmark = bermudan_reference(PARAMS, N_EX, 2000).price
     print(f"American reference {american:.6f}; Bermudan benchmark (n_ex={N_EX}) {benchmark:.6f}")
-    print("Path-count experiment")
-    paths_experiment(benchmark, american)
-    print("Basis sweep")
-    basis_experiment(benchmark)
-    print("Bias decomposition")
-    decomposition(benchmark, american)
-    print("Boundary")
-    boundary_plot()
-    print("Pareto table")
-    pareto_table(american)
+    for name, fn in (("paths", lambda: paths_experiment(benchmark, american)), ("basis", lambda: basis_experiment(benchmark)),
+                     ("decomposition", lambda: decomposition(benchmark, american)), ("boundary", boundary_plot),
+                     ("pareto", lambda: pareto_table(american, benchmark))):
+        if not stages or name in stages:
+            print(name)
+            fn()
 
 
 if __name__ == "__main__":
-    main()
+    main(set(sys.argv[1:]))

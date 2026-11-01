@@ -1,0 +1,4 @@
+scenario,spot_jump_reference,method_uncertainty_pde_vs_tree,escrowed_tree_N4000,model_difference_american,european_spot_jump,european_escrowed,model_difference_european
+one_dividend_put,7.407327,8.4e-06,7.278045,-0.12928,6.83487,6.71879,-0.11608
+quarterly_put,7.203712,5.2e-05,7.082559,-0.12115,6.83608,6.71885,-0.11723
+large_dividend_call,7.914409,4.8e-05,7.641296,-0.27311,7.29780,7.06122,-0.23658

@@ -1,0 +1,4 @@
+model,american,european,premium,yield_q
+discrete,7.407203,6.834676,0.572527,0.00000
+continuous,6.963017,6.718425,0.244593,0.02970
+none,6.090246,5.573444,0.516802,0.00000

@@ -184,13 +184,14 @@ Results (S=K=100, n_ex = 50, Bermudan benchmark 6.0786, laguerre degree 3), 30 s
   the denominator is not.
 - **Boundary.** The previous comparison set a 50-date Bermudan policy against an *American* boundary. With the Bermudan tree
   boundary on the same 50 dates added, the mean gap over 0.3 < t < 0.9 drops from **+1.28** (vs American PDE) to **+0.11**
-  (vs Bermudan tree; mean absolute 0.38), so most of the "LSM error" was the exercise-date effect, not LSM. The shift matches
-  the continuity-correction form exp(beta sigma sqrt(dt)) (Broadie-Glasserman-Kou), but the measured constant is not 0.5826:
-  the Bermudan/American boundary ratio is 1.0332, 1.0203, 1.0147, 1.0094 for n_ex = 10, 25, 50, 100, against 1.0375, 1.0236,
-  1.0166, 1.0117 predicted with 0.5826, i.e. 80-89% of the predicted shift and an implied constant of 0.47-0.52 (0.51 fitted
-  through the origin; `results/tables/boundary_shift.csv`). At n_ex = 50 that is +1.25 on a boundary near 85 against the
-  +1.41 predicted. I did not investigate why the constant is smaller (the tree boundary itself has node-level noise of ~0.4
-  and the PDE reference boundary ~0.1%). The LSM boundary stays noisy (unsmoothed, wild at the earliest dates where no paths
+  (vs Bermudan tree; mean absolute 0.38), so most of the apparent LSM boundary bias was the exercise-date discretization,
+  not LSM. The Bermudan/American boundary shift scales like sigma sqrt(dt) with an **empirical constant of about 0.5**
+  (0.47-0.52 across n_ex, 0.51 fitted through the origin), below the barrier-monitoring constant 0.5826. That constant comes
+  from discretely monitored barrier options; using it for the American boundary was a heuristic, and the data shows it holds
+  only approximately: the Bermudan/American ratio is 1.0332, 1.0203, 1.0147, 1.0094 for n_ex = 10, 25, 50, 100, against 1.0375,
+  1.0236, 1.0166, 1.0117 predicted with 0.5826 (80-89% of the predicted shift). At n_ex = 50 the mean Bermudan-minus-American
+  gap is 1.22 against 1.40 predicted (`results/tables/boundary_shift.csv`). I have no tested explanation for the smaller
+  constant. The LSM boundary stays noisy (unsmoothed, wild at the earliest dates where no paths
   sit far below S0) and only the trend is tested.
 - **Test z-scores** (fixed seeds, 100,000 training paths; criterion |z| < 4): call q = 0 vs Black-Scholes +0.74 in-sample /
   -2.09 out-of-sample; put r = 0 vs Black-Scholes -1.76 / **-3.13**; put vs Bermudan benchmark -2.20 / -1.18; deep ITM put
@@ -207,3 +208,27 @@ Results (S=K=100, n_ex = 50, Bermudan benchmark 6.0786, laguerre degree 3), 30 s
 Raw data for the Step 4 error-vs-runtime plot is in `results/tables/pareto_raw.csv` (tree, extrapolated tree, PDE PSOR and
 penalty, LSM in- and out-of-sample over 5 seeds, laguerre degree 3). LSM errors there are against the *American* reference,
 so they include the 0.0118 discretization term.
+## Step 4: discrete cash dividends
+
+`OptionParams.dividends = ((ex_time, amount), ...)` (sorted on creation, `0 < t < T`, `amount > 0`). The spot follows GBM with drift `r - q` between ex-dates and jumps `S -> max(S - D, 1e-8*K)` at each one (the floor is only there to keep log-grids and paths valid). Exercise is allowed at the ex-date cum-dividend, i.e. just before the drop. `dividends=()` reproduces every earlier price (checked against the 8-digit values in the Step 3 `pareto_raw.csv`).
+
+- **Tree** (`tree.py`): plain CRR on S, no escrow. At the ex-date step the pre-dividend continuation at node `S_j` is the post-dividend layer linearly interpolated at `S_j - D` (linear extrapolation below the lowest node). Ex-dates snap to the nearest step with a `UserWarning` giving the time error; `aligned_steps(params, n_min)` returns an N that hits them exactly. Interpolation makes the tree first-order in dt, so N=1000 is off by 2.1e-3 and the misaligned N=1001 by 4.6e-3 (measured vs the PDE).
+- **PDE** (`pde.py`): each ex-date is a forced step boundary through the existing `Event` hook; `V(S, t-) = V(S - D, t+)` by cubic spline in log-price, then `max(., payoff)`. Rannacher restarts after each event. The far-end Dirichlet asymptotes carry the present value of the remaining dividends. Observed order of the price on M=N: 1.87-1.96 for the put and one-dividend call, 1.0 (clipped) for the large-dividend call.
+- **LSM** (`lsm.py`): ex-dates must lie on the exercise grid (`ValueError` otherwise). The regression at an ex-date uses the cum-dividend price; the continuation cashflows are the post-drop path values.
+- **Reference**: PDE at M=N=800/1600/3200 with Richardson at the observed order, cross-checked against aligned trees (`dividend_reference`). The gap between the two is the reference uncertainty: 8e-6 (one-dividend put), 5e-5 (quarterly put), 5e-5 (large-dividend call).
+- **Escrowed tree** (`escrowed_price`): a different model, used only to size model risk. It is 0.13 below the spot-jump American put (one dividend), 0.12 below for the quarterly case and 0.27 below for the large-dividend call, i.e. 2e3 to 1.5e4 times the PDE-vs-tree gap (8e-6, 5e-5, 5e-5; `dividend_model_risk.csv`). That gap may understate the true method error, so against a typical single-method error at modest grids (~1e-3, e.g. tree N=2000) the ratio is about 100. Either way the choice of dividend model moves the price much more than the choice of numerical method.
+
+### Findings (all as measured; `results/tables/dividend_*.csv`, `scripts/step4_dividends.py`)
+
+- **Merton**: for S=K=100, T=1, r=5%, t_d=0.5 the threshold is `K(1-e^{-r(T-t_d)}) = 2.469`. For D=0.8*threshold the American call equals the European call exactly (tree gap 0, PDE gap 0: the exercise region is empty). At D=2.5 the premium is 1.5e-4, at D=3 it is 0.027, at D=3*threshold (7.4) it is 1.00. With D=3*threshold exercise happens only at the ex-date step (tree step 2000 of 4000, S* = 106.5; PDE only at t=0.5).
+- **The put is never exercised cum-dividend**: waiting past the ex-date gains D at the cost of interest `K r dt`, so the put exercise region is empty for `t_d - D/(rK) < t <= t_d`. For D=3 that window covers the whole 0.5 years. The tree and PDE boundary is empty at the ex-date step; in LSM 0 of 200,000 paths exercise at that date (0.15 at neighbouring dates).
+- **Boundary jump (put, D=1)**: the pre-ex-date boundary vanishes at t = 0.301 (window 0.199 vs the predicted D/(rK) = 0.200), where S* = 67.1 (tree) / 67.9 (PDE); right after the ex-date it re-emerges at 84.0 / 83.9, a jump of +16.9 (tree) and +16.0 (PDE).
+- **European, one dividend**: tree 8.7860 and PDE 8.7858 agree to 2e-4; Black-Scholes on `S - D e^{-r t_d}` is 8.6696, 0.116 lower (1.3%), which is the escrowed-model gap above. LSM matches the European value in the Merton regime at z = +2.3 (out-of-sample, 1M paths).
+- **Cross-method** (American reference; LSM compared with the Bermudan tree on the same dates, out-of-sample, 200k training paths): one-dividend put LSM 7.3764 vs Bermudan 7.3844 (z = -1.7); quarterly put 7.1684 vs 7.1745 (z = -1.2); large-dividend call 7.8888 vs 7.9142 (z = -3.5, a real policy shortfall). The tree (N=2000) and PDE (M=N=800) are within 1.6e-3 and 4.6e-4 of the reference.
+- **LSM on the large-dividend call is a limitation, not something tuned away**: the exercise region exists at a single date, which a smooth low-degree polynomial cannot represent. With degree 3 about half of all early exercises happen at the wrong dates and the shortfall is -0.029 (laguerre) / -0.034 (monomial). As a diagnostic only, degree-5 monomial gives -0.0025 (5% off-date) and the European-value regressor -0.013; I did not tune the headline LSM numbers with these.
+- **Put premium vs D is non-monotonic** (0.517 at D=0, 0.487 at 0.5, then rising to 0.668 at D=5). Hypothesis, written before the test: small dividends remove early-exercise value before the ex-date (the empty window grows with D) while the post-ex-date part grows with D. Test (tree N=4000, `dividend_put_premium_split.csv`, `step4_put_premium_split.png`): premium with exercise allowed only up to the ex-date falls 0.364, 0.274, 0.192, 0.062, 0.005, 0 for D = 0, 0.5, 1, 2, 3, 4; with exercise allowed only after it, it rises monotonically 0.446, 0.466, 0.486, 0.528, 0.573, 0.619. The total dips because the first falls faster than the second rises for D up to somewhere between 0.5 and 1 (grid step 0.5), and is essentially the after-ex-date premium for D >= 2 (the pre-ex-date exercise adds 0.072, 0.021, 0.003 on top of it at D = 0, 0.5, 1). Hypothesis supported.
+- **Discrete vs continuous yield** (D=3, `q = 0.0297` matches the forward): American put 7.4072 vs 6.9630 (+0.444), European 6.835 vs 6.718, premium 0.573 vs 0.245. The difference peaks at S0 = 82.5 (0.97), almost exactly the no-dividend boundary at t=0 (about 81), and is below 0.1 above S0 = 120. With D=3 the empty window is D/(rK) = 0.6 years, longer than the 0.5 years before the ex-date, so a put sitting at today's no-dividend boundary cannot exercise until after the ex-date, whereas under a continuous yield it can exercise immediately (continuous boundary 76.6 at t=0.1; discrete boundary empty for t < 0.5 and 84.9 vs 81.4 at t=0.6).
+
+### Tolerances set in Step 4 (from measurements; the boundary-jump and escrow bands are sanity bands, not validations)
+
+Tree N=1000 vs PDE: 3e-3 (measured 2.1e-3); misaligned: 6e-3 (4.6e-3). Cross-method: reference uncertainty < 2e-4 (<= 5.2e-5); tree N=2000 < 3e-3 (<= 1.6e-3); PDE M=N=800 < 1e-3 (<= 4.6e-4); LSM shortfall vs the Bermudan tree > -0.05 (measured -0.026 worst, one-sided z < 4). Boundary jump 10-25 (measured 16-17) and European-vs-escrow 0.05-0.2 (0.116) are sanity bands: they only pin sign and rough size, and the escrow gap is a model difference, not an error. No earlier tolerance was loosened.

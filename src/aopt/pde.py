@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Literal
 import numpy as np
 from numpy.typing import NDArray
+from scipy.interpolate import CubicSpline
 from scipy.linalg import solve_banded
 from .params import OptionParams
 
@@ -71,14 +72,33 @@ def time_steps(T: float, N: int, event_taus: Sequence[float], rannacher: bool) -
     return steps, event_after
 
 
+def dividend_events(params: OptionParams, x: NDArray[np.float64], american: bool) -> list[Event]:
+    """Jump conditions V(S, t-) = V(S - D, t+), cubic spline in log-price; then the exercise projection at t-."""
+    def make(amount: float) -> EventHook:
+        def apply(S: NDArray[np.float64], V: NDArray[np.float64]) -> NDArray[np.float64]:
+            y = params.ex_dividend(S, amount)
+            out = CubicSpline(x, V)(np.log(np.maximum(y, S[0])))
+            low = y < S[0]
+            out[low] = V[0] + (y[low] - S[0]) * (V[1] - V[0]) / (S[1] - S[0])
+
+            return np.maximum(out, params.payoff(S)) if american else out
+        
+        return apply
+
+    return [Event(t, make(d)) for t, d in params.dividends]
+
+
 def boundary_values(params: OptionParams, S_lo: float, S_hi: float, tau: float, european: bool) -> tuple[float, float]:
     """Dirichlet values at the lower/upper end of the grid at time-to-maturity tau."""
     K, r, q = params.K, params.r, params.q
+    pv = params.dividend_pv(params.T - tau)  # dividends still to be paid: PV shifts the deep-ITM asymptotes
     if params.option_type == "put":
-        lo = K * math.exp(-r * tau) - S_lo * math.exp(-q * tau)
-        return (lo if european else max(lo, K - S_lo)), 0.0
+        pv_lo = min(pv, 0.99 * S_lo)  # remaining dividends push S further down: the put is worth K - (S - PV)
+        lo = K * math.exp(-r * tau) - S_lo * math.exp(-q * tau) + pv_lo
+        
+        return (lo if european else max(lo, K - S_lo + pv_lo)), 0.0
     
-    hi = S_hi * math.exp(-q * tau) - K * math.exp(-r * tau)
+    hi = S_hi * math.exp(-q * tau) - pv - K * math.exp(-r * tau)
 
     return 0.0, (hi if european else max(hi, S_hi - K))
 
@@ -87,6 +107,7 @@ def exercise_boundary_point(S: NDArray[np.float64], V: NDArray[np.float64], g: N
     """Critical price at one time level, smoothed below node resolution; NaN if no exercise region."""
     gap = V - g
     in_ex = np.flatnonzero((gap <= tol) & (g > 0.0))
+    in_ex = in_ex[(in_ex > 0) & (in_ex < S.size - 1)]  # the Dirichlet end nodes are not evidence of an exercise region
     if in_ex.size == 0:
         return math.nan
     
@@ -134,7 +155,7 @@ def solve_pde(params: OptionParams, M: int = 400, N: int = 400, *, european: boo
     b = -(sigma**2) / h**2 - r
     c = 0.5 * sigma**2 / h**2 + 0.5 * mu / h
 
-    ordered = sorted(events, key=lambda e: e.t)
+    ordered = sorted([*events, *dividend_events(params, x, not european)], key=lambda e: e.t)
     if any(not 0.0 < e.t < T for e in ordered) or any(u.t == v.t for u, v in zip(ordered, ordered[1:])):
         raise ValueError("event times must be distinct and lie strictly inside (0, T)")
     

@@ -1,0 +1,3 @@
+case,tree_vanishes_at_t,tree_S_before,tree_S_after,tree_jump,pde_vanishes_at_t,pde_S_before,pde_S_after,pde_jump,lsm_last_pre_ex_date_S,d_over_rK,tree_S_at_ex_date,pde_S_at_ex_date,lsm_S_at_ex_date,tree_exercise_steps,lsm_other_dates_with_boundary
+put D=1.0,0.3010,67.136,84.036,+16.900,0.3006,67.924,83.942,+16.018,62.826,0.200,,,,,
+call D=6.0,,,,,,,,,,,108.569,108.428,108.465,[np.int64(2000)],48
