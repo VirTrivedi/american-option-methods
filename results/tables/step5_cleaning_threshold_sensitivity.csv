@@ -1,0 +1,7 @@
+underlying,max_rel_spread,surviving,puts,calls
+AMZN,0.05,136,65,71
+AMZN,0.1,161,78,83
+AMZN,0.2,164,79,85
+SPY,0.05,646,328,318
+SPY,0.1,660,332,328
+SPY,0.2,666,332,334

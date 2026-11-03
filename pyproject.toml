@@ -7,10 +7,11 @@ name = "aopt"
 version = "0.1.0"
 description = "Comparison of binomial, Crank-Nicolson PDE and Longstaff-Schwartz pricers for American options"
 requires-python = ">=3.11"
-dependencies = ["numpy>=1.26", "scipy>=1.11", "matplotlib>=3.8"]
+dependencies = ["numpy>=1.26", "scipy>=1.11", "matplotlib>=3.8", "pandas>=2.1"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
+wrds = ["wrds>=3.1"]  # only for scripts/pull_wrds.py, run locally with your own ~/.pgpass
 
 [tool.setuptools.packages.find]
 where = ["src"]
