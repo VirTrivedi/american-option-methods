@@ -1,0 +1,10 @@
+check,quantity,measured,compared_with,test
+r = 0 put is never exercised early,tree N=500: American - European,3.552713678800501e-15,0,test_tree.py::test_zero_rate_american_put_equals_european
+r = 0 put is never exercised early,"PDE M=400, N=200: American - European",-3.6548275517134243e-10,0,test_pde.py::test_zero_rate_american_put_equals_european
+"Merton: call, D below K(1 - exp(-r(T - t_d)))","threshold (K=100, r=0.05, T-t_d=0.5)",2.4690087971667385,closed form,test_dividends.py::test_merton_below_threshold_call_equals_european
+"Merton: call, D = 0.8 x threshold",tree N=4000: American - European,0.0,0 (empty exercise region),test_dividends.py::test_merton_below_threshold_call_equals_european
+"Merton: call, D = 0.8 x threshold",PDE M=N=800: American - European,0.0,0 (penalty tolerance),test_dividends.py::test_merton_below_threshold_call_equals_european
+"Merton: call, D = 3 x threshold",tree N=4000: American - European (premium),1.0038571056595735,> 0,test_dividends.py::test_merton_above_threshold_exercise_only_just_before_ex_date
+put exercise region is empty before the ex-date,"window length t_d - t_vanish, D=1 (tree N=4000)",0.199,D/(rK) = 0.2000,test_dividends.py::test_put_boundary_jumps_at_ex_date
+put exercise region is empty before the ex-date,"boundary jump S*(after) - S*(before), D=1 (tree N=4000)",16.899782251527597,sanity band 10-25,test_dividends.py::test_put_boundary_jumps_at_ex_date
+"perpetual put boundary (T=30, r=8%, σ=40%)","max over t = 1.5, 3.0, 6.0 of |S*(t) - 50.0| / 50.0, tree N=3000",0.026495488080056338,relative node spacing 0.080,test_tree.py::test_perpetual_put_boundary

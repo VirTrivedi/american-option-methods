@@ -7,6 +7,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import figstyle
 import numpy as np
 from aopt.lsm import evaluate_fit, fit_lsm, lsm_boundary, lsm_price
 from aopt.params import OptionParams
@@ -116,7 +117,7 @@ def paths_experiment(benchmark: float, american: float) -> list[dict]:
         ax.legend(fontsize=7)
 
     fig.tight_layout()
-    fig.savefig(FIG_DIR / "step3_paths.png", dpi=150)
+    fig.savefig(FIG_DIR / "step3_paths.png", dpi=figstyle.DPI)
 
     return rows
 
@@ -163,7 +164,7 @@ def basis_experiment(benchmark: float) -> None:
         ax.legend(fontsize=8)
 
     fig.tight_layout()
-    fig.savefig(FIG_DIR / "step3_basis.png", dpi=150)
+    fig.savefig(FIG_DIR / "step3_basis.png", dpi=figstyle.DPI)
     for r in rows:
         if r["degree"] in (1, 2, 3, 6):
             print("  ", r["variant"], r["degree"], "in-sample bias", r["in_sample_bias"], "paired gain", r["paired_policy_gain_vs_laguerre3"], "+/-", r["paired_gain_se"])
@@ -201,7 +202,7 @@ def decomposition(benchmark: float, american: float) -> None:
     ax.legend(fontsize=7, loc="upper left")
     ax.grid(True, axis="y", alpha=0.3)
     fig.tight_layout()
-    fig.savefig(FIG_DIR / "step3_bias.png", dpi=150)
+    fig.savefig(FIG_DIR / "step3_bias.png", dpi=figstyle.DPI)
 
 
 def boundary_plot() -> None:
@@ -270,7 +271,7 @@ def boundary_plot() -> None:
     ax.grid(True, alpha=0.3)
     ax.legend(fontsize=7)
     fig.tight_layout()
-    fig.savefig(FIG_DIR / "step3_boundary.png", dpi=150)
+    fig.savefig(FIG_DIR / "step3_boundary.png", dpi=figstyle.DPI)
     print(f"  fitted beta through the origin: {beta_fit:.3f}")
 
 

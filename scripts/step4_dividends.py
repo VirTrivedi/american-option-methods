@@ -8,6 +8,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import figstyle
 import numpy as np
 from aopt.lsm import fit_lsm, evaluate_fit, lsm_boundary
 from aopt.params import OptionParams
@@ -97,7 +98,7 @@ def premium_vs_dividend() -> None:
     axes[2].grid(True, alpha=0.3)
     axes[2].legend(fontsize=7)
     fig.tight_layout()
-    fig.savefig(FIG_DIR / "step4_premium_vs_D.png", dpi=150)
+    fig.savefig(FIG_DIR / "step4_premium_vs_D.png", dpi=figstyle.DPI)
     call_below = [float(r["early_exercise_premium"]) for r in rows if r["option_type"] == "call" and float(r["D"]) < thr]
     call_above = [(float(r["D"]), float(r["early_exercise_premium"])) for r in rows if r["option_type"] == "call" and float(r["D"]) > thr]
     print(f"  Merton threshold {thr:.4f}; call premium for D below it: max {max(call_below):.2e}; above: {call_above[:3]} ...")
@@ -129,7 +130,7 @@ def premium_decomposition() -> None:
     ax.grid(True, alpha=0.3)
     ax.legend(fontsize=8)
     fig.tight_layout()
-    fig.savefig(FIG_DIR / "step4_put_premium_split.png", dpi=150)
+    fig.savefig(FIG_DIR / "step4_put_premium_split.png", dpi=figstyle.DPI)
 
 
 def boundaries() -> list[dict]:
@@ -184,7 +185,7 @@ def boundaries() -> list[dict]:
         ax.legend(fontsize=7)
 
     fig.tight_layout()
-    fig.savefig(FIG_DIR / "step4_boundaries.png", dpi=150)
+    fig.savefig(FIG_DIR / "step4_boundaries.png", dpi=figstyle.DPI)
     write_csv(TABLE_DIR / "dividend_boundaries.csv", [{k: r.get(k, "") for k in dict.fromkeys(k for r in out for k in r)} for r in out])
     for r in out:
         print("  ", r)
@@ -238,7 +239,7 @@ def discrete_vs_continuous() -> None:
     axes[0].legend(fontsize=8)
     axes[2].legend(fontsize=8)
     fig.tight_layout()
-    fig.savefig(FIG_DIR / "step4_discrete_vs_continuous.png", dpi=150)
+    fig.savefig(FIG_DIR / "step4_discrete_vs_continuous.png", dpi=figstyle.DPI)
     for name in ("discrete", "continuous"):
         am = res[name][0]
         m = ~np.isnan(am.boundary_S) & (am.boundary_t < BASE["T"] - 1e-9)

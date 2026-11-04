@@ -4,6 +4,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import figstyle
 import numpy as np
 from aopt.params import OptionParams
 from aopt.reference import averaged_price, reference_price, richardson
@@ -61,10 +62,10 @@ def main() -> None:
     print(f"Reference price: {ref.price:.6f} +/- {ref.error_estimate:.1e} (n_base={ref.n_base})")
 
     fig, slopes = convergence_figure(ref.price)
-    fig.savefig(OUT_DIR / "step1_convergence.png", dpi=150)
+    fig.savefig(OUT_DIR / "step1_convergence.png", dpi=figstyle.DPI)
     print("Log-log convergence slopes:", {k: round(v, 2) for k, v in slopes.items()})
 
-    boundary_figure().savefig(OUT_DIR / "step1_boundary.png", dpi=150)
+    boundary_figure().savefig(OUT_DIR / "step1_boundary.png", dpi=figstyle.DPI)
     print(f"Saved figures to {OUT_DIR}")
 
 

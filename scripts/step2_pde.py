@@ -6,6 +6,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import figstyle
 import numpy as np
 from dataclasses import replace
 from aopt.params import OptionParams
@@ -185,12 +186,12 @@ def main() -> None:
     print(f"PDE M=N=400: {pde400.price:.6f}, gap to reference {pde400.price - ref.price:+.2e}, delta {pde400.delta:.5f}, gamma {pde400.gamma:.5f}, PSOR sweeps/step {pde400.mean_iterations:.1f}")
 
     fig, slopes = convergence_figure(ref.price, ref_off.price)
-    fig.savefig(FIG_DIR / "step2_convergence.png", dpi=150)
+    fig.savefig(FIG_DIR / "step2_convergence.png", dpi=figstyle.DPI)
     print("Convergence slopes:", {k: round(v, 2) for k, v in slopes.items()})
     print("Domain sensitivity slopes (price error vs M=N):", {k: round(v, 2) for k, v in write_domain_sensitivity(ref.price).items()})
-    greeks_figure().savefig(FIG_DIR / "step2_greeks.png", dpi=150)
+    greeks_figure().savefig(FIG_DIR / "step2_greeks.png", dpi=figstyle.DPI)
     fig, gap = boundary_figure()
-    fig.savefig(FIG_DIR / "step2_boundary.png", dpi=150)
+    fig.savefig(FIG_DIR / "step2_boundary.png", dpi=figstyle.DPI)
     print(f"Max |PDE - tree| boundary difference for 0.1 < t < 0.9: {gap:.3f}")
     for row in write_table(ref.price):
         print(row)

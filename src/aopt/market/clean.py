@@ -15,7 +15,7 @@ REASONS = ("bid_nonpositive", "crossed_market", "wide_spread", "low_open_interes
 
 @dataclass(frozen=True)
 class CleanConfig:
-    """Pre-registered thresholds (docs/hypotheses_step5.md); the spread threshold is varied only in the sensitivity table."""
+    """Stated in advance thresholds (docs/hypotheses_step5.md); the spread threshold is varied only in the sensitivity table."""
     max_rel_spread: float = 0.10  # (ask - bid) / mid
     min_open_interest: float = 10.0
     min_days: float = 7.0

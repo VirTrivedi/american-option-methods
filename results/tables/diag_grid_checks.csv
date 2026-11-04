@@ -1,0 +1,12 @@
+hypothesis,quantity,pre_registered_surprise_threshold,value_registered_400,surprise_registered_400,value_400_recomputed,value_1600,value_richardson,surprise_400_recomputed,surprise_1600,surprise_richardson,verdict_changes_vs_registered,status
+H1,"AMZN median put diff, ATM (K/S 0.98-1.02)",> 0.006,0.00191,False,0.0019061711161381667,0.0021213038706293097,0.0021323341943654817,False,False,False,False,exploratory (post-hoc)
+H1,"SPY median put diff, ATM (K/S 0.98-1.02)",> 0.006,0.00202,False,0.002021175199588915,0.0022880666700065,0.002290779810079635,False,False,False,False,exploratory (post-hoc)
+H1,"AMZN median put diff, K/S <= 0.95",> 0.003,0.00043,False,0.00042683759061873383,0.00033484644163622734,0.0003397582771411667,False,False,False,False,exploratory (post-hoc)
+H1,"SPY median put diff, K/S <= 0.95",> 0.003,0.00107,False,0.0010684285189475617,0.0010123999476598228,0.0010066048761372126,False,False,False,False,exploratory (post-hoc)
+H1,"AMZN fraction of ITM puts (K/S >= 1.05, n=16) with diff > half-width",not above half-width at all (0),0.6875,False,0.6875,0.6875,0.6875,False,False,False,False,exploratory (post-hoc)
+H1,"SPY fraction of ITM puts (K/S >= 1.05, n=2) with diff > half-width",not above half-width at all (0),1.0,False,1.0,1.0,1.0,False,False,False,False,exploratory (post-hoc)
+H2,AMZN max |BS - American| for calls 0.9<=K/S<=1.1 (n=52); expected ~0 only if q=0,> 0.001 (0.1 vol points),0.00054,False,0.0005359410214585969,3.491553126910851e-05,4.8843514667995525e-05,False,False,False,False,exploratory (post-hoc)
+H3,AMZN strikes with market premium negative and entirely below zero by the band (of 72),any far outside the band,0.0,False,0.0,0.0,0.0,False,False,False,False,exploratory (post-hoc)
+H3,AMZN mean market premium,negative,0.35857,False,0.35857120484143856,0.35857120484143856,0.35857120484143856,False,False,False,False,exploratory (post-hoc)
+H4,SPY mean |call-put IV gap|: American minus BS (negative = improvement),>= 0 (no improvement),0.00914,True,0.009136310648581194,0.009067920326839889,0.009062752909490494,True,True,True,False,exploratory (post-hoc)
+method,SPY max IV change vs the next finer answer (400 vs 1600; 1600 vs 800; 1600 vs Richardson); median half-width 0.00033,must be much smaller than the median half-width (flagged if above),,True,0.0009022570053915935,0.0002526236511178892,8.420788370596306e-05,True,False,False,True,exploratory (post-hoc)

@@ -1,0 +1,12 @@
+underlying,expiry,days,n,median_atm_iv_vp,status
+AMZN,all,all,14,28.83709095996705,exploratory (post-hoc)
+AMZN,2025-05-30,15,6,28.674513200258033,exploratory (post-hoc)
+AMZN,2025-06-13,29,2,28.93007261399211,exploratory (post-hoc)
+AMZN,2025-06-20,36,2,28.52357580721504,exploratory (post-hoc)
+AMZN,2025-06-27,43,2,28.70981160983287,exploratory (post-hoc)
+AMZN,2025-07-18,64,2,28.93531837470158,exploratory (post-hoc)
+SPY,all,all,136,15.238175374944806,exploratory (post-hoc)
+SPY,2025-06-13,29,28,15.665297189241173,exploratory (post-hoc)
+SPY,2025-06-27,43,28,15.26286346291729,exploratory (post-hoc)
+SPY,2025-06-30,46,42,14.676171185223136,exploratory (post-hoc)
+SPY,2025-07-18,64,38,15.51555350838109,exploratory (post-hoc)

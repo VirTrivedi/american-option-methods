@@ -10,6 +10,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import figstyle
 import numpy as np
 import pandas as pd
 from aopt.bs import bs_price
@@ -26,6 +27,7 @@ from aopt.pde import solve_pde
 ROOT = Path(__file__).resolve().parents[1]
 HYPOTHESES = ROOT / "docs" / "hypotheses_step5.md"
 RAW_DIR = ROOT / "data" / "raw"
+DERIVED_DIR = ROOT / "data" / "derived"  # per-contract tables carry vendor quotes
 CFG = CleanConfig()
 MNY_BINS = [0.8, 0.9, 0.95, 1.05, 1.1, 1.2]
 DAY_BINS = [0, 45, 90, 182, 366]
@@ -33,7 +35,7 @@ BOOTSTRAP_B, BOOTSTRAP_SEED = 1000, 20240315
 SENSITIVITY = [("base", {}), ("r -50bp", dict(r_shift_bp=-50.0)), ("r +50bp", dict(r_shift_bp=50.0)), ("spot -0.05%", dict(spot_shift=-5e-4)),
                ("spot +0.05%", dict(spot_shift=5e-4)), ("dividends x0.9", dict(div_scale=0.9)), ("dividends x1.1", dict(div_scale=1.1))]
 DISCRETIZATION_SAMPLE = 30
-C = {"bs": "#F58518", "am": "#4C78A8", "band": "#BBBBBB", "vendor": "#54A24B"}
+C = {"bs": figstyle.PALETTE["orange"], "am": figstyle.PALETTE["blue"], "band": figstyle.PALETTE["grey"], "vendor": figstyle.PALETTE["green"]}
 
 
 @dataclass
@@ -46,20 +48,20 @@ class Underlying:
 
 
 def parse_hypotheses(path: Path) -> dict[str, str]:
-    """key: value lines inside docs/hypotheses_step5.md; refuses to proceed unless status is CONFIRMED and nothing is TBD."""
+    """key: value lines inside docs/hypotheses_step5.md; refuses to proceed while any snapshot field is TBD or missing."""
     kv = {m.group(1): m.group(2).strip() for line in path.read_text().splitlines() if (m := re.match(r"^(\w+):\s*([^#]*?)\s*(#.*)?$", line))}
-    if kv.get("status") != "CONFIRMED":
-        raise SystemExit(f"{path} has status {kv.get('status')!r}: fill in the snapshot block and set `status: CONFIRMED` before running real data")
-    
+    if kv.get("status", "CONFIRMED") != "CONFIRMED":
+        raise SystemExit(f"{path} has status {kv.get('status')!r}: set `status: CONFIRMED` before running real data")
+
     todo = [k for k in ("snapshot_date", "ticker_nondividend", "ticker_dividend", "min_days", "max_days", "expiry_targets_days", "cash_distr_types") if kv.get(k, "TBD") == "TBD"]
     if todo:
-        raise SystemExit(f"{path}: still TBD: {todo}")
+        raise SystemExit(f"{path}: still TBD or missing: {todo}")
 
     return kv
 
 
 def select_expiries(quotes: pd.DataFrame, targets: list[int], name: str) -> pd.DataFrame:
-    """Keep, for each target (days after the snapshot), the nearest listed expiry not already chosen (pre-registered rule)."""
+    """Keep, for each target (days after the snapshot), the nearest listed expiry not already chosen (stated in advance rule)."""
     days = (quotes["expiry"].dt.normalize() - quotes["quote_time"].dt.normalize()).dt.days
     listed = sorted(set(zip(quotes["expiry"], days)), key=lambda x: x[1])
     chosen: list = []
@@ -103,7 +105,7 @@ def load_real(kv: dict[str, str]) -> tuple[list[Underlying], ZeroCurve, datetime
             raise SystemExit(f"{ticker} is declared non-dividend but distrd lists {len(dist)} distribution(s) in the window; pick another ticker")
         
         if ticker == kv["ticker_dividend"] and len(in_window) != 1:
-            raise SystemExit(f"{ticker}: pre-registered rule needs exactly one ex-date in the window, distrd lists {len(in_window)}; choose another snapshot date")
+            raise SystemExit(f"{ticker}: stated in advance rule needs exactly one ex-date in the window, distrd lists {len(in_window)}; choose another snapshot date")
         
         out.append(Underlying(ticker, quotes, dist, rej, latest_raw(RAW_DIR, "opprcd", ticker, date).stem.split("_")[-1]))
 
@@ -143,6 +145,15 @@ def iv_table(kept: pd.DataFrame, workers: int, kinds=("bs", "american"), mid_onl
 
 
 MIN_CELL = 5  # heatmap cells with fewer contracts are masked
+PROVENANCE = ""  # set in main(): source and snapshot, stamped on every figure
+
+
+def derived_dir(tabdir: Path) -> Path:
+    """Where per-contract tables go: data/derived (gitignored) for the real run, next to the other synthetic outputs otherwise."""
+    out = DERIVED_DIR if tabdir == ROOT / "results" / "tables" else tabdir
+    out.mkdir(parents=True, exist_ok=True)
+
+    return out
 
 
 def buckets(df: pd.DataFrame) -> pd.DataFrame:
@@ -162,7 +173,7 @@ def analysis_a(t: pd.DataFrame, name: str, figdir: Path, tabdir: Path) -> pd.Dat
     tab = d.groupby(["cp_flag", "mny_bucket", "maturity_bucket"], observed=True).agg(n=("diff", "size"), median_diff=("diff", "median"), 
                     mean_half_width=("american_half", "mean"), frac_exceeds_half_width=("exceeds_half_width", "mean")).reset_index()
     tab.to_csv(tabdir / f"step5_a_bs_vs_american_{name}.csv", index=False)
-    d.drop(columns=["spot"]).to_csv(tabdir / f"step5_iv_contracts_{name}.csv", index=False)
+    d.drop(columns=["spot"]).to_csv(derived_dir(tabdir) / f"step5_iv_contracts_{name}.csv", index=False)
     print(f"  (a) {name}: contracts with both IVs {len(d)}; fraction |BS-American| > American half-width: puts {d[d.cp_flag == 'P']['exceeds_half_width'].mean():.3f}, "
           f"calls {d[d.cp_flag == 'C']['exceeds_half_width'].mean():.3f}; median diff puts {d[d.cp_flag == 'P']['diff'].median():+.4f}, calls {d[d.cp_flag == 'C']['diff'].median():+.4f}")
     expiries = sorted(d["expiry"].unique())
@@ -182,9 +193,7 @@ def analysis_a(t: pd.DataFrame, name: str, figdir: Path, tabdir: Path) -> pd.Dat
     axes[0, 0].set_ylabel("implied vol")
     axes[1, 0].set_ylabel("implied vol")
     fig.suptitle(f"{name}: IV smiles, BS vs American (sanity check, not a mispricing search)", fontsize=9)
-    fig.tight_layout()
-    fig.savefig(figdir / f"step5_a_smiles_{name}.png", dpi=130)
-    plt.close(fig)
+    figstyle.save(fig, figdir / f"step5_a_smiles_{name}.png", f"{PROVENANCE}; N={len(d)} contracts")
 
     fig, axes = plt.subplots(1, 3, figsize=(15, 4.2))
     for ax, cp in zip(axes[:2], ("P", "C")):
@@ -197,24 +206,41 @@ def analysis_a(t: pd.DataFrame, name: str, figdir: Path, tabdir: Path) -> pd.Dat
         ax.grid(True, alpha=0.3)
 
     ax.legend(fontsize=7)
-    puts_b = d[d.cp_flag == "P"]
-    pt = puts_b.pivot_table(index="mny_bucket", columns="maturity_bucket", values="diff", aggfunc="median", observed=False, dropna=False)
-    cnt = puts_b.pivot_table(index="mny_bucket", columns="maturity_bucket", values="diff", aggfunc="size", observed=False, dropna=False).fillna(0).astype(int)
-    vals = np.where(cnt.to_numpy() >= MIN_CELL, pt.to_numpy(float), np.nan)
-    im = axes[2].imshow(vals, aspect="auto", cmap="viridis")
-    axes[2].set_xticks(range(pt.shape[1]), pt.columns, fontsize=6, rotation=30)
-    axes[2].set_yticks(range(pt.shape[0]), pt.index, fontsize=6)
-    for i in range(cnt.shape[0]):
-        for j in range(cnt.shape[1]):
-            axes[2].text(j, i, f"n={cnt.iat[i, j]}", ha="center", va="center", fontsize=6, color="w" if cnt.iat[i, j] >= MIN_CELL else "grey")
-
-    axes[2].set_title(f"median put BS-American difference (cells with n<{MIN_CELL} masked)", fontsize=8)
-    fig.colorbar(im, ax=axes[2])
-    fig.tight_layout()
-    fig.savefig(figdir / f"step5_a_difference_{name}.png", dpi=130)
-    plt.close(fig)
+    heatmap(axes[2], d[d.cp_flag == "P"], "diff", f"{name}: median put BS - American IV (vol decimals)")
+    figstyle.save(fig, figdir / f"step5_a_difference_{name}.png", f"{PROVENANCE}; N={len(d)} contracts")
 
     return d
+
+
+def heatmap(ax, puts: pd.DataFrame, col: str, title: str) -> None:
+    """Median of `col` by moneyness bucket (y, ascending upwards) and maturity bucket (x); each cell prints its contract count and cells with n < MIN_CELL are masked."""
+    pt = puts.pivot_table(index="mny_bucket", columns="maturity_bucket", values=col, aggfunc="median", observed=False, dropna=False)
+    cnt = puts.pivot_table(index="mny_bucket", columns="maturity_bucket", values=col, aggfunc="size", observed=False, dropna=False).fillna(0).astype(int)
+    vals = np.ma.masked_where(cnt.to_numpy() < MIN_CELL, pt.to_numpy(float))
+    im = ax.imshow(vals, aspect="auto", origin="lower")
+    ax.set_xticks(range(pt.shape[1]), [f"{c} d" for c in pt.columns], fontsize=7, rotation=20)
+    ax.set_yticks(range(pt.shape[0]), pt.index, fontsize=7)
+    ax.set_xlabel("days to expiry"); ax.set_ylabel("K / S")
+    ax.grid(False)
+    for i in range(cnt.shape[0]):
+        for j in range(cnt.shape[1]):
+            ax.text(j, i, f"n={cnt.iat[i, j]}", ha="center", va="center", fontsize=7, color="w" if cnt.iat[i, j] >= MIN_CELL else "#888888")
+
+    ax.set_title(f"{title}\ncells with n < {MIN_CELL} masked", fontsize=8)
+    ax.figure.colorbar(im, ax=ax)
+
+
+def summarize_premium(d: pd.DataFrame, name: str, tabdir: Path) -> None:
+    """Aggregate view of the strike-level parity premium (the strike-level table itself stays out of the repository)."""
+    d = d.assign(group=pd.cut(d["moneyness"], [0.0, 0.95, 1.05, 9.0], labels=["OTM (K/S<=0.95)", "ATM (0.95-1.05)", "ITM (K/S>1.05)"]).astype(str))
+    rows = []
+    for kind, key in (("all", None), ("expiry", d["expiry"].dt.date.astype(str)), ("moneyness", d["group"])):
+        groups = [("all", d)] if key is None else list(d.groupby(key))
+        for label, g in groups:
+            rows.append(dict(by=kind, group=label, n=len(g), mean_market_premium=g.market_premium.mean(), mean_model_premium=g.model_premium.mean(), mean_market_minus_model=g.market_minus_model.mean(),
+                             median_market_minus_model=g.market_minus_model.median(), frac_within_band=g.within_band.mean()))
+
+    pd.DataFrame(rows).to_csv(tabdir / f"step5_b_premium_summary_{name}.csv", index=False)
 
 
 def pairs(t: pd.DataFrame) -> pd.DataFrame:
@@ -225,7 +251,7 @@ def pairs(t: pd.DataFrame) -> pd.DataFrame:
     return m
 
 
-def analysis_b(raw_inputs: pd.DataFrame, name: str, figdir: Path, tabdir: Path, scenario: dict | None = None, quiet: bool = False) -> pd.DataFrame:
+def analysis_b(raw_inputs: pd.DataFrame, name: str, figdir: Path, tabdir: Path, scenario: dict | None = None, quiet: bool = False, grid: int = 400) -> pd.DataFrame:
     """Parity premium vs model premium for a non-dividend underlying (premium test)."""
     if any(len(x) for x in raw_inputs["dividends"]):
         raise SystemExit(f"{name}: analysis (b) requires no dividends in the window")
@@ -243,7 +269,7 @@ def analysis_b(raw_inputs: pd.DataFrame, name: str, figdir: Path, tabdir: Path, 
             continue
 
         pc = Contract(S, K, T, rate, "P")
-        model = solve_pde(pc.params(sig), 400, 400, american_method="penalty").price - float(bs_price(S, K, T, rate, 0.0, sig, "put"))
+        model = solve_pde(pc.params(sig), grid, grid, american_method="penalty").price - float(bs_price(S, K, T, rate, 0.0, sig, "put"))
         rows.append(dict(underlying=name, expiry=r["expiry"], strike=K, moneyness=K / S, days=r["days_c"], market_premium=market, band_halfwidth=band, model_premium=model,
                          market_minus_model=market - model, within_band=abs(market - model) <= band))
         
@@ -251,7 +277,8 @@ def analysis_b(raw_inputs: pd.DataFrame, name: str, figdir: Path, tabdir: Path, 
     if quiet:
         return d
     
-    d.to_csv(tabdir / f"step5_b_premium_{name}.csv", index=False)
+    d.to_csv(derived_dir(tabdir) / f"step5_b_premium_{name}.csv", index=False)
+    summarize_premium(d, name, tabdir)
     print(f"  (b) {name}: {len(d)} strikes; mean market premium {d.market_premium.mean():+.4f}, mean model premium {d.model_premium.mean():+.4f}, "
           f"mean (market-model) {d.market_minus_model.mean():+.4f}; fraction within propagated band {d.within_band.mean():.3f}")
     expiries = sorted(d["expiry"].unique())
@@ -268,9 +295,7 @@ def analysis_b(raw_inputs: pd.DataFrame, name: str, figdir: Path, tabdir: Path, 
     axes[0, 0].set_ylabel("early-exercise premium of the put")
     axes[0, 0].legend(fontsize=6)
     fig.suptitle(f"{name}: put early-exercise premium, parity estimate vs model (assumes no borrow cost, calls not exercised early, synchronized quotes)", fontsize=8)
-    fig.tight_layout()
-    fig.savefig(figdir / f"step5_b_premium_{name}.png", dpi=130)
-    plt.close(fig)
+    figstyle.save(fig, figdir / f"step5_b_premium_{name}.png", f"{PROVENANCE}; N={len(d)} strikes (call-put pairs)")
 
     return d
 
@@ -298,9 +323,7 @@ def analysis_c(t: pd.DataFrame, name: str, figdir: Path, tabdir: Path, quiet: bo
     ax.set_title(f"{name}: call-put IV consistency", fontsize=9)
     ax.grid(True, alpha=0.3)
     ax.legend(fontsize=8)
-    fig.tight_layout()
-    fig.savefig(figdir / f"step5_c_call_put_gap_{name}.png", dpi=130)
-    plt.close(fig)
+    figstyle.save(fig, figdir / f"step5_c_call_put_gap_{name}.png", f"{PROVENANCE}; N={len(m)} call-put pairs")
 
     return m
 
@@ -431,7 +454,7 @@ def analysis_bootstrap(a_tables: dict[str, pd.DataFrame], b_tables: dict[str, pd
 
 
 def hypothesis_checks(a_tables, b_tables, c_tables, disc: float | None, tabdir: Path) -> None:
-    """Evaluate the pre-registered thresholds of docs/hypotheses_step5.md section 3 (units: IV in decimals, 0.01 = one vol point)."""
+    """Evaluate the stated in advance thresholds of docs/hypotheses_step5.md section 3 (units: IV in decimals, 0.01 = one vol point)."""
     rows = []
 
     def add(h: str, what: str, value: float, threshold: str, surprising: bool) -> None:
@@ -466,7 +489,7 @@ def hypothesis_checks(a_tables, b_tables, c_tables, disc: float | None, tabdir: 
         add("method", f"max |IV(400) - IV(1600)| in the discretization check (SPY); median half-width {half:.5f}", disc, "must be much smaller than the median half-width (here: > half-width flagged)", bool(disc > half))
     
     pd.DataFrame(rows).to_csv(tabdir / "step5_hypothesis_checks.csv", index=False)
-    print("  hypothesis checks against the pre-registered thresholds:\n" + pd.DataFrame(rows).to_string(index=False))
+    print("  hypothesis checks against the stated in advance thresholds:\n" + pd.DataFrame(rows).to_string(index=False))
 
 
 def discretization_check(kept: pd.DataFrame, t: pd.DataFrame, tabdir: Path) -> float:
@@ -490,6 +513,7 @@ def discretization_check(kept: pd.DataFrame, t: pd.DataFrame, tabdir: Path) -> f
 
 
 def main() -> None:
+    global PROVENANCE
     ap = argparse.ArgumentParser()
     ap.add_argument("--synthetic", action="store_true", help="run the pipeline on the synthetic fixture (outputs under results/synthetic/)")
     ap.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 2) - 1))
@@ -500,12 +524,14 @@ def main() -> None:
         base = ROOT / "results" / "synthetic"
         nd_name, div_name = "SYN_ND", "SYN_DIV"
         print("SYNTHETIC DATA: pipeline demo only, no market data")
+        PROVENANCE = "source: synthetic fixture (no market data)"
     else:
         kv = parse_hypotheses(HYPOTHESES)
         unders, curve, quote_time = load_real(kv)
         base = ROOT / "results"
         nd_name, div_name = kv["ticker_nondividend"], kv["ticker_dividend"]
         print(f"data source: WRDS OptionMetrics Ivy DB; snapshot {kv['snapshot_date']} (quote time {quote_time}); pull stamps {[u.pull_stamp for u in unders]}")
+        PROVENANCE = f"source: WRDS OptionMetrics Ivy DB, snapshot {kv['snapshot_date']} 16:00 ET close"
     
     figdir, tabdir = base / "figures", base / "tables"
     figdir.mkdir(parents=True, exist_ok=True)

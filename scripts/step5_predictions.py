@@ -14,7 +14,7 @@ from aopt.market.synthetic import distributions_table, make_chain
 QT = datetime(2026, 5, 13, 16, 0)
 RATE = 0.04
 CURVE = ZeroCurve(np.array([14.0, 365.0]), np.array([RATE, RATE]))
-EXPIRY_DAYS = (14, 28, 42, 56, 65)  # the pre-registered targets (2 to ~9 weeks)
+EXPIRY_DAYS = (14, 28, 42, 56, 65)  # the stated in advance targets (2 to ~9 weeks)
 STRIKES = (0.85, 0.9, 0.95, 1.0, 1.05, 1.1, 1.15)
 AMZN_LIKE = dict(base=0.30, skew=-0.10, smile=0.30, term=0.0)
 SPY_LIKE = dict(base=0.16, skew=-0.20, smile=0.40, term=0.0)

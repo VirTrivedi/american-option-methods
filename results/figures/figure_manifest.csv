@@ -1,0 +1,8 @@
+figure,provenance
+step5_a_difference_AMZN,"source: WRDS OptionMetrics Ivy DB, snapshot 2025-05-15 16:00 ET close; N=151 contracts"
+step5_a_difference_SPY,"source: WRDS OptionMetrics Ivy DB, snapshot 2025-05-15 16:00 ET close; N=592 contracts"
+step5_a_smiles_AMZN,"source: WRDS OptionMetrics Ivy DB, snapshot 2025-05-15 16:00 ET close; N=151 contracts"
+step5_a_smiles_SPY,"source: WRDS OptionMetrics Ivy DB, snapshot 2025-05-15 16:00 ET close; N=592 contracts"
+step5_b_premium_AMZN,"source: WRDS OptionMetrics Ivy DB, snapshot 2025-05-15 16:00 ET close; N=72 strikes (call-put pairs)"
+step5_c_call_put_gap_SPY,"source: WRDS OptionMetrics Ivy DB, snapshot 2025-05-15 16:00 ET close; N=239 call-put pairs"
+step6_amzn_premium_two_row,"source: WRDS OptionMetrics Ivy DB, snapshot 2025-05-15 16:00 ET close; N=72 strikes (call-put pairs); row-2 offset = median over 13 strikes with K/S < 0.9, estimated from the same data (circular)"
